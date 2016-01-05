@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +28,24 @@ public class HomeActivity extends AppCompatActivity
 
     private void loadView() {
         initNav();
+
+        findViewById(R.id.imgMenu).setOnClickListener(this);
     }
 
-    private void loadData(){
+    private void loadData() {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.imgMenu) {
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                drawer.openDrawer(GravityCompat.START);
+            }
+        }
     }
 
     private void initNav() {

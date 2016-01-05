@@ -11,5 +11,5 @@
 
     <include
         android:id="@+id/actionbar"
-        layout="@layout/layout_actionbar_normal" />
+        layout="@layout/layout_actionbar_home_activity" />
 </RelativeLayout>
