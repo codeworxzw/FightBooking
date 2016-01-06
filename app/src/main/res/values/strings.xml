@@ -5,4 +5,23 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!--Fight Booking String-->
+    <string name="search_fight">Tìm chuyến bay</string>
+    <string name="one_way">Một chiều</string>
+    <string name="round_trip">Khứ hồi</string>
+
+    <string name="place_from">Điểm đi</string>
+    <string name="place_to">Điểm đến</string>
+
+    <string name="time_go">Giờ đi</string>
+    <string name="time_back">Giờ về</string>
+
+    <string name="adult">Người lớn(12+)</string>
+    <string name="child">Trẻ em(2-11)</string>
+    <string name="infant">Sơ sinh(0-1)</string>
+
+    <string name="next">&#9668;</string>
+    <string name="previous">&#9658;</string>
+
 </resources>

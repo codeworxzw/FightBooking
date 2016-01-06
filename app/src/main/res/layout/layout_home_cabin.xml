@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingTop="10dp">
+
+    <Button
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ebedec"
+        android:text="@string/next"
+        android:textColor="@color/homeTextColor"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="#ebedec"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Hạng vé rẻ"
+        android:textColor="@color/homeTextColor"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <Button
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ebedec"
+        android:text="@string/previous"
+        android:textColor="@color/homeTextColor"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

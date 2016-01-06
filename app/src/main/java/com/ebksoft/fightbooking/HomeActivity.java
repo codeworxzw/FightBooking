@@ -12,9 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+
+    private TextView txtTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +34,12 @@ public class HomeActivity extends AppCompatActivity
     private void loadView() {
         initNav();
 
+        txtTitle = (TextView) findViewById(R.id.txtTitle);
         findViewById(R.id.imgMenu).setOnClickListener(this);
     }
 
     private void loadData() {
-
+        txtTitle.setText(getString(R.string.search_fight).toUpperCase(Locale.getDefault()));
     }
 
     @Override

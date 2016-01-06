@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.ebksoft.fightbooking.HomeActivity"
     tools:showIn="@layout/app_bar_home">
@@ -12,4 +13,39 @@
     <include
         android:id="@+id/actionbar"
         layout="@layout/layout_actionbar_home_activity" />
-</RelativeLayout>
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/layout_home_header" />
+
+    <include
+        android:id="@+id/place"
+        layout="@layout/layout_home_place" />
+
+    <include
+        android:id="@+id/time"
+        layout="@layout/layout_home_time" />
+
+    <include
+        android:id="@+id/passenger"
+        layout="@layout/layout_home_passenger" />
+
+    <include
+        android:id="@+id/cabin"
+        layout="@layout/layout_home_cabin" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_search_fight" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>
