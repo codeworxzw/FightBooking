@@ -24,4 +24,74 @@
     <string name="next">&#9668;</string>
     <string name="previous">&#9658;</string>
 
+    <string name="choose_airport">Chọn sân bay</string>
+
+    <string name="international">QUỐC TẾ</string>
+    <string name="south">MIỀN NAM</string>
+    <string name="north">MIỀN BẮC</string>
+    <string name="middle">MIỀN TRUNG</string>
+    <string name="codeOrName">Mã hoặc tên thành phố</string>
+
+    <string name="way_go">CHIỀU ĐI</string>
+    <string name="way_back">CHIỀU VỀ</string>
+    <string name="brief">TÓM TẮT</string>
+    <string name="next_page">TIẾP TỤC</string>
+
+
+    <!--Local airport-->
+    <string-array name="airport_name">
+        <item>Hồ Chí Minh</item>
+        <item>Cần Thơ</item>
+        <item>Côn Đảo</item>
+        <item>Phú Quốc</item>
+        <item>Rạch Giá</item>
+        <item>Cà Mau</item>
+
+        <item>Hà Nội</item>
+        <item>Hải Phòng</item>
+        <item>Điện Biên</item>
+
+        <item>Đà Nẵng</item>
+        <item>Thanh Hoá</item>
+        <item>Vinh</item>
+        <item>Huế</item>
+        <item>Đồng Hới</item>
+        <item>Chu Lai</item>
+        <item>Quy Nhơn</item>
+        <item>Tuy Hoà</item>
+        <item>Nha Trang</item>
+        <item>Pleiku</item>
+        <item>Buôn Mê Thuộc</item>
+        <item>Đà Lạc</item>
+
+    </string-array>
+
+    <string-array name="airport_code">
+        <item>SGN</item>
+        <item>VCA</item>
+        <item>VCS</item>
+        <item>PQC</item>
+        <item>VKG</item>
+        <item>CAH</item>
+
+        <item>HAN</item>
+        <item>HPH</item>
+        <item>DIN</item>
+
+        <item>DAD</item>
+        <item>THD</item>
+        <item>VII</item>
+        <item>HUI</item>
+        <item>VDH</item>
+        <item>VCL</item>
+        <item>UIH</item>
+        <item>TBB</item>
+        <item>CXR</item>
+        <item>PXU</item>
+        <item>BMV</item>
+        <item>DLI</item>
+
+
+    </string-array>
+
 </resources>

@@ -1,5 +1,6 @@
 package com.ebksoft.fightbooking;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -36,6 +37,9 @@ public class HomeActivity extends AppCompatActivity
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         findViewById(R.id.imgMenu).setOnClickListener(this);
+
+        findViewById(R.id.rlPlaceFrom).setOnClickListener(this);
+        findViewById(R.id.imgSearchFight).setOnClickListener(this);
     }
 
     private void loadData() {
@@ -51,6 +55,14 @@ public class HomeActivity extends AppCompatActivity
             } else {
                 drawer.openDrawer(GravityCompat.START);
             }
+        }
+
+        if (view.getId() == R.id.rlPlaceFrom) {
+            startActivity(new Intent(this, ChooseAirportActivity.class));
+        }
+
+        if (view.getId() == R.id.imgSearchFight) {
+            startActivity(new Intent(this, SearchFightResultActivity.class));
         }
     }
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvPlaceFromTo"
+            android:layout_width="wrap_content"
+            android:textSize="17sp"
+            android:layout_height="wrap_content"
+            android:text="TP HO CHI MINH - HA NOI"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/tvTimeGoTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thu 2, 11/01/2016 - Thu 6, 16/01/2016"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

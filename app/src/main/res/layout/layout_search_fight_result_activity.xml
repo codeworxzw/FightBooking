@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/actionbar"
+        layout="@layout/layout_actionbar_search_fight_result" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/actionbar"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1px"
+            android:background="@drawable/bg_border"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btWaygo"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:text="@string/way_go"
+                android:textColor="#fff"
+                android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/btWayback"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="@string/way_back"
+                android:textColor="#fff"
+                android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/btBrief"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:text="@string/brief"
+                android:textColor="#fff"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+
+        <include
+            android:id="@+id/llTime"
+            layout="@layout/layout_search_fight_result_header" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        </ListView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/next_page"
+                    android:textColor="@color/white"
+                    android:textSize="27sp" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ic_fight" />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
