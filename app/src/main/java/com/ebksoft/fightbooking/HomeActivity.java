@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -21,6 +23,17 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private TextView txtTitle;
+    private Button btOneWay, btRoundTrip;
+
+    private View rlTimeToParent;
+
+    private int countAdult = 1, countChild = 1, countIndent = 1;
+    private Button btDownAdult, btUpAdult, btDownChild, btUpChild, btDownIndent, btUpIndent;
+    private TextView tvAdult, tvChild, tvIndent;
+
+    private boolean isNormalType = true;
+    private Button btNext, btPrev;
+    private TextView tvTicketType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +53,41 @@ public class HomeActivity extends AppCompatActivity
 
         findViewById(R.id.rlPlaceFrom).setOnClickListener(this);
         findViewById(R.id.imgSearchFight).setOnClickListener(this);
+        findViewById(R.id.rlTimeGo).setOnClickListener(this);
+        findViewById(R.id.rlTimeTo).setOnClickListener(this);
+
+        btOneWay = (Button) findViewById(R.id.btOneWay);
+        btRoundTrip = (Button) findViewById(R.id.btRoundTrip);
+        rlTimeToParent = findViewById(R.id.rlTimeToParent);
+
+        btOneWay.setOnClickListener(this);
+        btRoundTrip.setOnClickListener(this);
+
+        btDownAdult = (Button) findViewById(R.id.btDownAdult);
+        btUpAdult = (Button) findViewById(R.id.btUpAdult);
+        btDownChild = (Button) findViewById(R.id.btDownChild);
+        btUpChild = (Button) findViewById(R.id.btUpChild);
+        btDownIndent = (Button) findViewById(R.id.btDownIndent);
+        btUpIndent = (Button) findViewById(R.id.btUpIndent);
+
+        tvAdult = (TextView) findViewById(R.id.tvAdult);
+        tvChild = (TextView) findViewById(R.id.tvChild);
+        tvIndent = (TextView) findViewById(R.id.tvIndent);
+
+        btDownAdult.setOnClickListener(this);
+        btUpAdult.setOnClickListener(this);
+        btDownChild.setOnClickListener(this);
+        btUpChild.setOnClickListener(this);
+        btDownIndent.setOnClickListener(this);
+        btUpIndent.setOnClickListener(this);
+
+
+        btNext = (Button) findViewById(R.id.btNext);
+        btPrev = (Button) findViewById(R.id.btPrev);
+        btNext.setOnClickListener(this);
+        btPrev.setOnClickListener(this);
+
+        tvTicketType = (TextView) findViewById(R.id.tvTicketType);
     }
 
     private void loadData() {
@@ -48,21 +96,102 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.imgMenu) {
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
-            } else {
-                drawer.openDrawer(GravityCompat.START);
-            }
-        }
 
-        if (view.getId() == R.id.rlPlaceFrom) {
-            startActivity(new Intent(this, ChooseAirportActivity.class));
-        }
+        switch (view.getId()) {
+            case R.id.imgMenu:
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+                break;
 
-        if (view.getId() == R.id.imgSearchFight) {
-            startActivity(new Intent(this, SearchFightResultActivity.class));
+            case R.id.rlPlaceFrom:
+                startActivity(new Intent(this, ChooseAirportActivity.class));
+                break;
+
+            case R.id.imgSearchFight:
+                startActivity(new Intent(this, SearchFightResultActivity.class));
+                break;
+
+            case R.id.rlTimeGo:
+                Intent i = new Intent(this, ChooseTimeActivity.class);
+                i.putExtra("isRoundTrip", false);
+                startActivity(i);
+                break;
+
+            case R.id.rlTimeTo:
+                Intent i2 = new Intent(this, ChooseTimeActivity.class);
+                i2.putExtra("isRoundTrip", true);
+                startActivity(i2);
+                break;
+
+            case R.id.btOneWay:
+                rlTimeToParent.setVisibility(View.INVISIBLE);
+                btOneWay.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+                btRoundTrip.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                break;
+
+            case R.id.btRoundTrip:
+                rlTimeToParent.setVisibility(View.VISIBLE);
+                btOneWay.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                btRoundTrip.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+                break;
+
+            case R.id.btDownAdult:
+                if (countAdult != 0)
+                    countAdult--;
+                updateNumPassenger();
+                break;
+
+            case R.id.btUpAdult:
+                countAdult++;
+                updateNumPassenger();
+                break;
+
+            case R.id.btDownChild:
+                if (countChild != 0)
+                    countChild--;
+                updateNumPassenger();
+                break;
+
+            case R.id.btUpChild:
+                countChild++;
+                updateNumPassenger();
+                break;
+
+            case R.id.btDownIndent:
+                if (countIndent != 0)
+                    countIndent--;
+                updateNumPassenger();
+                break;
+
+            case R.id.btUpIndent:
+                countIndent++;
+                updateNumPassenger();
+                break;
+
+            case R.id.btPrev:
+            case R.id.btNext:
+
+                isNormalType = !isNormalType;
+                updateTicketType();
+                break;
+        }
+    }
+
+    private void updateNumPassenger() {
+        tvAdult.setText(String.valueOf(countAdult));
+        tvChild.setText(String.valueOf(countChild));
+        tvIndent.setText(String.valueOf(countIndent));
+    }
+
+    private void updateTicketType() {
+        if (isNormalType) {
+            tvTicketType.setText(getString(R.string.ticket_type_normal));
+        } else {
+            tvTicketType.setText(getString(R.string.ticket_type_vip));
         }
     }
 

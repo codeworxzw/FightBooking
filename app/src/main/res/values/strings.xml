@@ -36,6 +36,24 @@
     <string name="way_back">CHIỀU VỀ</string>
     <string name="brief">TÓM TẮT</string>
     <string name="next_page">TIẾP TỤC</string>
+    <string name="choose_time">Chọn thời gian bay</string>
+
+    <string name="ticket_type_normal">Hạng vé rẻ</string>
+    <string name="ticket_type_vip">Hạng thương gia</string>
+
+    <string name="choose_time_go">Chọn ngày đi</string>
+    <string name="choose_time_back">Chọn ngày về</string>
+
+    <!--TimeSquare Lib-->
+    <string name="Done">Done</string>
+    <string name="Customized">Customized</string>
+    <string name="Decorator">Decorator</string>
+    <string name="RTL">RTL</string>
+    <string name="Dialog">Dialog</string>
+    <string name="DisplayOnly">DisplayOnly</string>
+    <string name="Range">Range</string>
+    <string name="Multi">Multi</string>
+    <string name="Single">Single</string>
 
 
     <!--Local airport-->

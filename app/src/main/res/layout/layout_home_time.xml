@@ -25,6 +25,7 @@
                 android:text="@string/time_go" />
 
             <RelativeLayout
+                android:id="@+id/rlTimeGo"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_below="@+id/timeGo"
@@ -104,6 +105,8 @@
         android:layout_weight="1">
 
         <RelativeLayout
+            android:visibility="invisible"
+            android:id="@+id/rlTimeToParent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -116,6 +119,7 @@
                 android:text="@string/time_go" />
 
             <RelativeLayout
+                android:id="@+id/rlTimeTo"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_below="@+id/timeBack"

@@ -2,24 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="1px"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingTop="1px">
 
     <Button
-        style="?android:attr/buttonBarButtonStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@color/homeHeaderColor"
-        android:text="@string/one_way"
-        android:textColor="#fff" />
-
-    <Button
+        android:id="@+id/btOneWay"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@color/colorPrimaryDark"
+        android:text="@string/one_way"
+        android:textColor="#fff" />
+
+    <Button
+        android:id="@+id/btRoundTrip"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
         android:text="@string/round_trip"
         android:textColor="#fff" />
 

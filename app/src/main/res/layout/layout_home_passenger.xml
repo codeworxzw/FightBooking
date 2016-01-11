@@ -28,7 +28,7 @@
             android:orientation="horizontal">
 
             <Button
-
+                android:id="@+id/btDownAdult"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -39,6 +39,7 @@
                 android:textSize="30sp" />
 
             <TextView
+                android:id="@+id/tvAdult"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -50,6 +51,7 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/btUpAdult"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -87,6 +89,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btDownChild"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -97,6 +100,7 @@
                 android:textSize="30sp" />
 
             <TextView
+                android:id="@+id/tvChild"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -108,6 +112,7 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/btUpChild"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -144,6 +149,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btDownIndent"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -154,6 +160,7 @@
                 android:textSize="30sp" />
 
             <TextView
+                android:id="@+id/tvIndent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -165,6 +172,7 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/btUpIndent"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
