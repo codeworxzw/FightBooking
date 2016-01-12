@@ -6,7 +6,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.ebksoft.fightbooking"
+        applicationId "com.ebksoft.flightbooking"
         minSdkVersion 11
         targetSdkVersion 22
         versionCode 1
