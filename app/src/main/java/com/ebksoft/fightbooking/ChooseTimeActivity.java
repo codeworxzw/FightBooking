@@ -1,5 +1,6 @@
 package com.ebksoft.fightbooking;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -57,6 +58,12 @@ public class ChooseTimeActivity extends BaseActivity implements CalendarPickerVi
     @Override
     public void onDateSelected(Date date) {
         Log.e("", "onDateSelected");
+
+        Intent intent = getIntent();
+        intent.putExtra("data", String.valueOf(date.getTime()));
+
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override

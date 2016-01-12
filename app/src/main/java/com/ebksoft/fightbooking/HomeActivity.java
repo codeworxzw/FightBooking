@@ -2,9 +2,8 @@ package com.ebksoft.fightbooking;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,12 +14,34 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ebksoft.fightbooking.model.ResponseObj.InitResObj;
+import com.ebksoft.fightbooking.model.ResponseObj.SearchResObj;
+import com.ebksoft.fightbooking.network.AppRequest;
+import com.ebksoft.fightbooking.utils.CommonUtils;
+import com.ebksoft.fightbooking.utils.DataRequestCallback;
+import com.ebksoft.fightbooking.utils.SharedpreferencesUtils;
+
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+
+    public static final int PLACE_FROM_CODE = 1000;
+    public static final int PLACE_TO_CODE = 1001;
+
+    public static final int TIME_GO_CODE = 1002;
+    public static final int TIME_BACK_CODE = 1003;
+
 
     private TextView txtTitle;
     private Button btOneWay, btRoundTrip;
@@ -34,6 +55,17 @@ public class HomeActivity extends AppCompatActivity
     private boolean isNormalType = true;
     private Button btNext, btPrev;
     private TextView tvTicketType;
+
+    private TextView tvPlaceFromCode, tvPlaceFromName, tvPlaceToCode, tvPlaceToName;
+
+    private TextView tvDateGo, tvMonthYearGo, tvDayGo;
+    private TextView tvDateTo, tvMonthYearTo, tvDayTo;
+
+    private ImageView imgFightBack;
+
+    //value
+    private String session_key = "";
+    private String FromCityCode = "", ToCityCode = "", DepartDate = "", ReturnDate = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +84,7 @@ public class HomeActivity extends AppCompatActivity
         findViewById(R.id.imgMenu).setOnClickListener(this);
 
         findViewById(R.id.rlPlaceFrom).setOnClickListener(this);
+        findViewById(R.id.rlPlaceTo).setOnClickListener(this);
         findViewById(R.id.imgSearchFight).setOnClickListener(this);
         findViewById(R.id.rlTimeGo).setOnClickListener(this);
         findViewById(R.id.rlTimeTo).setOnClickListener(this);
@@ -88,15 +121,123 @@ public class HomeActivity extends AppCompatActivity
         btPrev.setOnClickListener(this);
 
         tvTicketType = (TextView) findViewById(R.id.tvTicketType);
+
+        tvPlaceFromCode = (TextView) findViewById(R.id.tvPlaceFromCode);
+        tvPlaceFromName = (TextView) findViewById(R.id.tvPlaceFromName);
+        tvPlaceToCode = (TextView) findViewById(R.id.tvPlaceToCode);
+        tvPlaceToName = (TextView) findViewById(R.id.tvPlaceToName);
+
+        tvDateGo = (TextView) findViewById(R.id.tvDateGo);
+        tvMonthYearGo = (TextView) findViewById(R.id.tvMonthYearGo);
+        tvDayGo = (TextView) findViewById(R.id.tvDayGo);
+        tvDateTo = (TextView) findViewById(R.id.tvDateTo);
+        tvMonthYearTo = (TextView) findViewById(R.id.tvMonthYearTo);
+        tvDayTo = (TextView) findViewById(R.id.tvDayTo);
+
+        imgFightBack = (ImageView) findViewById(R.id.imgFightBack);
     }
 
     private void loadData() {
         txtTitle.setText(getString(R.string.search_fight).toUpperCase(Locale.getDefault()));
+
+        loadDefaultData();
+    }
+
+    private void loadDefaultData() {
+        tvPlaceFromCode.setText("SGN");
+        tvPlaceFromName.setText("Hồ Chí Minh");
+
+        tvPlaceToCode.setText("HAN");
+        tvPlaceToName.setText("Hà Nội");
+
+        FromCityCode = "SGN";
+        ToCityCode = "HAN";
+    }
+
+    private void reqInitAPI() {
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("authen_key", "canhdieuvietnet");
+        params.put("ip_address", CommonUtils.getIPAddress(this));
+
+        AppRequest.reqInitAPI(this, params, true, new DataRequestCallback<InitResObj>() {
+            @Override
+            public void onResult(InitResObj result, boolean continueWaiting) {
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
+                        session_key = result.data.session_key;
+                        SharedpreferencesUtils.getInstance(HomeActivity.this).save("session_key", session_key);
+
+                        searchFight();
+                    } else {
+                        session_key = "";
+                        CommonUtils.showToast(HomeActivity.this, result.message);
+                    }
+
+                } else {
+                    session_key = "";
+                }
+
+
+            }
+        });
+    }
+
+    private void searchFight() {
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("session_key", session_key);
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("FromCityCode", FromCityCode);
+            jsonObject.put("ToCityCode", ToCityCode);
+            jsonObject.put("DepartDate", "/Date(" + DepartDate + ")/");
+
+            if (ReturnDate.equals("")) {
+                jsonObject.put("ReturnDate", ReturnDate);
+            } else {
+                jsonObject.put("ReturnDate", "/Date(" + ReturnDate + ")/");
+            }
+
+            jsonObject.put("AdultNum", countAdult);
+            jsonObject.put("ChildNum", countChild);
+            jsonObject.put("InfantNum", countIndent);
+
+            params.put("search_info", jsonObject);
+        } catch (Exception ex) {
+            Log.e("", "SeerchFight Error");
+        }
+
+
+        AppRequest.searchFight(this, params, true, new DataRequestCallback<SearchResObj>() {
+            @Override
+            public void onResult(SearchResObj result, boolean continueWaiting) {
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
+                        startActivity(new Intent(HomeActivity.this, SearchFightResultActivity.class));
+                    } else {
+                        CommonUtils.showToast(HomeActivity.this, result.message);
+                    }
+
+                } else {
+
+                }
+
+
+            }
+        });
+
     }
 
     @Override
     public void onClick(View view) {
 
+        Intent i = null;
         switch (view.getId()) {
             case R.id.imgMenu:
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -108,33 +249,43 @@ public class HomeActivity extends AppCompatActivity
                 break;
 
             case R.id.rlPlaceFrom:
-                startActivity(new Intent(this, ChooseAirportActivity.class));
+                i = new Intent(this, ChooseAirportActivity.class);
+                startActivityForResult(i, PLACE_FROM_CODE);
+                break;
+
+            case R.id.rlPlaceTo:
+                i = new Intent(this, ChooseAirportActivity.class);
+                startActivityForResult(i, PLACE_TO_CODE);
                 break;
 
             case R.id.imgSearchFight:
-                startActivity(new Intent(this, SearchFightResultActivity.class));
+                reqInitAPI();
                 break;
 
             case R.id.rlTimeGo:
-                Intent i = new Intent(this, ChooseTimeActivity.class);
+                i = new Intent(this, ChooseTimeActivity.class);
                 i.putExtra("isRoundTrip", false);
-                startActivity(i);
+                startActivityForResult(i, TIME_GO_CODE);
                 break;
 
             case R.id.rlTimeTo:
-                Intent i2 = new Intent(this, ChooseTimeActivity.class);
-                i2.putExtra("isRoundTrip", true);
-                startActivity(i2);
+                i = new Intent(this, ChooseTimeActivity.class);
+                i.putExtra("isRoundTrip", true);
+                startActivityForResult(i, TIME_BACK_CODE);
                 break;
 
             case R.id.btOneWay:
                 rlTimeToParent.setVisibility(View.INVISIBLE);
+                imgFightBack.setVisibility(View.INVISIBLE);
+
                 btOneWay.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
                 btRoundTrip.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 break;
 
             case R.id.btRoundTrip:
                 rlTimeToParent.setVisibility(View.VISIBLE);
+                imgFightBack.setVisibility(View.VISIBLE);
+
                 btOneWay.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 btRoundTrip.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
                 break;
@@ -178,6 +329,66 @@ public class HomeActivity extends AppCompatActivity
                 isNormalType = !isNormalType;
                 updateTicketType();
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMMM", Locale.US);
+        String dayOfWeek = "";
+        String month = "";
+        long date = 0;
+
+        Calendar calendar = Calendar.getInstance();
+
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PLACE_FROM_CODE:
+                    FromCityCode = data.getExtras().getString("code");
+                    String nameFrom = data.getExtras().getString("name");
+
+                    tvPlaceFromCode.setText(FromCityCode);
+                    tvPlaceFromName.setText(nameFrom);
+
+                    break;
+
+                case PLACE_TO_CODE:
+                    ToCityCode = data.getExtras().getString("code");
+                    String nameTo = data.getExtras().getString("name");
+
+                    tvPlaceToCode.setText(ToCityCode);
+                    tvPlaceToName.setText(nameTo);
+                    break;
+
+                case TIME_GO_CODE:
+                    DepartDate = data.getExtras().getString("data");
+                    date = Long.parseLong(DepartDate);
+                    calendar.setTimeInMillis(date);
+
+                    dayOfWeek = dayFormat.format(calendar.getTime());
+                    month = monthFormat.format(calendar.getTime());
+
+                    tvDateGo.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+                    tvMonthYearGo.setText(month + ", " + calendar.get(Calendar.YEAR));
+                    tvDayGo.setText(dayOfWeek);
+                    break;
+
+                case TIME_BACK_CODE:
+                    ReturnDate = data.getExtras().getString("data");
+                    date = Long.parseLong(ReturnDate);
+                    calendar.setTimeInMillis(date);
+
+                    dayOfWeek = dayFormat.format(calendar.getTime());
+                    month = monthFormat.format(calendar.getTime());
+
+                    tvDateTo.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+                    tvMonthYearTo.setText(month + ", " + calendar.get(Calendar.YEAR));
+                    tvDayTo.setText(dayOfWeek);
+                    break;
+            }
         }
     }
 

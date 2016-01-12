@@ -1,5 +1,6 @@
 package com.ebksoft.fightbooking;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +71,7 @@ public class ChooseAirportActivity extends BaseActivity {
         }
     }
 
-    private View createView(int i) {
+    private View createView(final int i) {
 
         View view = inflater.inflate(R.layout.layout_choose_airport_row_item, null);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -82,6 +83,18 @@ public class ChooseAirportActivity extends BaseActivity {
 
         tvName.setText(airportName[i] + " (" + airportCode[i] + ")");
         tvCode.setText("(" + airportCode[i] + ")");
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = getIntent();
+                intent.putExtra("code", airportCode[i]);
+                intent.putExtra("name", airportName[i]);
+
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
 
         return view;
     }
