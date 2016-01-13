@@ -2,53 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#fb824e"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingLeft="30dp">
 
     <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_margin="5dp"
         android:scaleType="fitXY"
-        android:src="@mipmap/ic_app" />
+        android:src="@mipmap/ic_app"
+        android:visibility="invisible" />
 
     <TextView
-        android:id="@+id/tvPlanName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="center"
-        android:text="VN7002" />
+        android:text="@string/code_flight"
+        android:textColor="#fff" />
 
     <TextView
-        android:id="@+id/tvStartDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
         android:gravity="center"
-        android:text="12:10 - 12:50" />
+        android:text="@string/time_flight"
+        android:textColor="#fff" />
 
     <TextView
-        android:id="@+id/tvAdultTotalPrice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
         android:gravity="center"
-        android:text="1.500.000 đ" />
+        android:text="@string/price_flight"
+        android:textColor="#fff" />
 
-    <RelativeLayout
+    <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:gravity="center">
-
-        <RadioButton
-            android:id="@+id/rbChoose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </RelativeLayout>
-
+        android:gravity="center"
+        android:text="@string/choose"
+        android:textColor="#fff" />
 
 </LinearLayout>

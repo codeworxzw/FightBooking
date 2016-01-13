@@ -24,13 +24,11 @@ public class AppApplication extends Application {
 
     public boolean isInternetConnection = false;
 
-    public boolean isAudioPlaying = false;
-    public int currentSong = 0;
-    public int currentList = 0;
+    public String FromCityCode = "";
+    public String ToCityCode = "";
+    public int countAdult = 0;
+    public int countChild = 0;
+    public int countIndent = 0;
 
-    public String currentSongName = "";
-    public String currentSongDesc = "";
-
-    public boolean currentError = false;
 
 }

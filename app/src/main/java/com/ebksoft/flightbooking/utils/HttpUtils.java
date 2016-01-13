@@ -33,7 +33,7 @@ import java.util.List;
 public class HttpUtils {
 
     private static final String TAG = HttpUtils.class.getName();
-    private static final int CONNECTION_TIMEOUT = 30;
+    private static final int CONNECTION_TIMEOUT = 30000;
 
 //	public static String requestHttpPOST(String url, JSONObject json) {
 //
@@ -156,8 +156,8 @@ public class HttpUtils {
         HttpPost httpPost = new HttpPost(url);
 
         BasicHttpParams timeoutParams = new BasicHttpParams();
-        HttpConnectionParams.setConnectionTimeout(timeoutParams, 10000);
-        HttpConnectionParams.setSoTimeout(timeoutParams, 10000);
+        HttpConnectionParams.setConnectionTimeout(timeoutParams, CONNECTION_TIMEOUT);
+        HttpConnectionParams.setSoTimeout(timeoutParams, CONNECTION_TIMEOUT);
         httpPost.setParams(timeoutParams);
 
         DefaultHttpClient httpClient = new DefaultHttpClient();

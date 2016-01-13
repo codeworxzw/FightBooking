@@ -70,34 +70,43 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="50dp"
-        android:layout_height="80dp"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/ic_airplane_go" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="#fff">
 
         <TextView
+            android:id="@+id/none"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
 
-        <ImageView
-            android:visibility="invisible"
-            android:id="@+id/imgFightBack"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:src="@drawable/ic_airplane_back" />
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="80dp"
+            android:layout_below="@+id/none"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_airplane_go" />
+
+            <ImageView
+                android:id="@+id/imgFightBack"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_airplane_back"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:layout_width="0dp"

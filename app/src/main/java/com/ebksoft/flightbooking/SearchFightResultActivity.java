@@ -1,28 +1,39 @@
 package com.ebksoft.flightbooking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.ebksoft.flightbooking.model.ResponseObj.GetTicketResObj;
+import com.ebksoft.flightbooking.model.ResponseObj.InitResObj;
+import com.ebksoft.flightbooking.model.ResponseObj.SearchResObj;
 import com.ebksoft.flightbooking.model.TicketInfo;
 import com.ebksoft.flightbooking.network.AppRequest;
+import com.ebksoft.flightbooking.utils.AppApplication;
 import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.ImageUtils;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by chauminhnhut on 1/7/16.
@@ -35,7 +46,23 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     private Button btWaygo, btWayback, btBrief;
 
     private int indexTab = 1;
-    private int indexSelected = 3;
+//    private int indexSelected = 3;
+
+
+    private List<TicketInfo> ticketInfos;
+    private CustomAdapter adapter;
+    private ListView listView;
+    private View headerView;
+
+    private TextView tvPlaceFromTo, tvTimeGoTo;
+
+    private boolean isOneWay = true;
+    private String[] dayOfWeek;
+
+    private String timeGo = "", timeBack = "";
+    private long time_go = 0, time_back = 0;
+
+    private String session_key = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,20 +110,169 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         btWaygo.setOnClickListener(this);
         btWayback.setOnClickListener(this);
         btBrief.setOnClickListener(this);
+
+        listView = (ListView) findViewById(R.id.listView);
+
+        headerView = getLayoutInflater().inflate(R.layout.layout_ticket_row_header, null);
+
+        tvPlaceFromTo = (TextView) findViewById(R.id.tvPlaceFromTo);
+        tvTimeGoTo = (TextView) findViewById(R.id.tvTimeGoTo);
     }
 
     @Override
     protected void loadData() {
+        dayOfWeek = getResources().getStringArray(R.array.dayOfWeek);
 
-        updateFocus(indexSelected);
+        showDataOnList();
+
+        // Thuc hien cac cong viec khac trong khi dang cho request
+        loadDataActionbar();
+
+        updateNumOfTab();
+
         focusColorTab(indexTab);
 
+        focusColorDate(3);
+
+        updateDayText();
+
+        // updateTimeActionbar();
+    }
+
+    private void showDataOnList() {
+        ticketInfos = new ArrayList<>();
+        adapter = new CustomAdapter(this, ticketInfos);
+        listView.setAdapter(adapter);
+
         getTicket();
+    }
+
+    private void updateDayText() {
+        Calendar calendar = Calendar.getInstance();
+
+        long t = time_go;
+        if (indexTab == 2) {
+            t = time_back;
+        }
+
+        calendar.setTimeInMillis(t);
+        int index = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        int indexTemp = index;
+        String dateGo = dayOfWeek[index];
+        String timeGo = String.format("%02d/%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
+
+        tvCurrentDay.setText(dateGo);
+        tvCurrentTime.setText(timeGo);
+
+        //Next 1 day
+        calendar.setTimeInMillis(t + 86400000);
+        index = (index + 1) % dayOfWeek.length;
+        dateGo = dayOfWeek[index];
+        timeGo = String.format("%02d/%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
+        tvNext1Day.setText(dateGo);
+        tvNext1Time.setText(timeGo);
+
+        //Next 2 day
+        calendar.setTimeInMillis(t + 86400000 * 2);
+        index = (index + 1) % dayOfWeek.length;
+        dateGo = dayOfWeek[index];
+        timeGo = String.format("%02d/%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
+        tvNext2Day.setText(dateGo);
+        tvNext2Time.setText(timeGo);
+
+        index = indexTemp;
+
+        //Prev 1 day
+        calendar.setTimeInMillis(t - 86400000);
+        if (index == 0)
+            index = dayOfWeek.length - 1;
+        else
+            index--;
+        dateGo = dayOfWeek[index];
+        timeGo = String.format("%02d/%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
+        tvPass1Day.setText(dateGo);
+        tvPass1Time.setText(timeGo);
+
+        //Prev 2 day
+        calendar.setTimeInMillis(t - 86400000 * 2);
+        if (index == 0)
+            index = dayOfWeek.length - 1;
+        else
+            index--;
+        dateGo = dayOfWeek[index];
+        timeGo = String.format("%02d/%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
+        tvPass2Day.setText(dateGo);
+        tvPass2Time.setText(timeGo);
+    }
+
+
+    private void updateNumOfTab() {
+        if (isOneWay) {
+            btWayback.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadDataActionbar() {
+
+        Calendar calendar = Calendar.getInstance();
+
+        Bundle bundle = getIntent().getExtras();
+        String s = bundle.getString("place_from") + " - " + bundle.getString("place_to");
+        tvPlaceFromTo.setText(s.toUpperCase(Locale.getDefault()));
+
+        timeGo = bundle.getString("time_go");
+        time_go = Long.parseLong(timeGo);
+        calendar.setTimeInMillis(time_go);
+        timeGo = dayOfWeek[calendar.get(Calendar.DAY_OF_WEEK) - 1];
+        timeGo += ", " + String.format("%02d/%02d/%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR));
+
+        timeBack = bundle.getString("time_back");
+        if (!TextUtils.isEmpty(timeBack)) {
+
+            time_back = Long.parseLong(timeBack);
+            calendar.setTimeInMillis(time_back);
+            timeBack = dayOfWeek[calendar.get(Calendar.DAY_OF_WEEK) - 1];
+            timeBack += ", " + String.format("%02d/%02d/%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR));
+
+            isOneWay = false;
+        }
+
+        updateTimeGoTo();
+
+    }
+
+    private void updateTimeActionbar() {
+        if (indexTab == 1) {
+            long lTimeGo = time_go;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(lTimeGo);
+            timeGo = dayOfWeek[calendar.get(Calendar.DAY_OF_WEEK) - 1];
+            timeGo += ", " + String.format("%02d/%02d/%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR));
+        }
+
+        if (indexTab == 2) {
+            long lTimeGo = time_back;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(lTimeGo);
+            timeBack = dayOfWeek[calendar.get(Calendar.DAY_OF_WEEK) - 1];
+            timeBack += ", " + String.format("%02d/%02d/%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR));
+        }
+
+        updateTimeGoTo();
+    }
+
+    private void updateTimeGoTo() {
+        if (TextUtils.isEmpty(timeBack)) {
+            tvTimeGoTo.setText(timeGo);
+        } else {
+            tvTimeGoTo.setText(timeGo + " - " + timeBack);
+        }
     }
 
 
     private void getTicket() {
 
+        CommonUtils.showProgressDialog(this);
         HashMap<String, Object> params = new HashMap<String, Object>();
 
         params.put("session_key", SharedpreferencesUtils.getInstance(this).read("session_key"));
@@ -105,10 +281,19 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         AppRequest.getTicket(this, params, true, new DataRequestCallback<GetTicketResObj>() {
             @Override
             public void onResult(GetTicketResObj result, boolean continueWaiting) {
+                CommonUtils.closeProgressDialog();
+
+                listView.removeHeaderView(headerView);
+                listView.addHeaderView(headerView);
+
+                ticketInfos.clear();
 
                 if (null != result) {
                     if (result.status.equals("0")) {
 
+                        for (int i = 0; i < result.data.size(); i++) {
+                            ticketInfos.add(result.data.get(i));
+                        }
                     } else {
                         CommonUtils.showToast(mContext, result.message);
                     }
@@ -116,7 +301,10 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
                 } else {
                 }
 
-
+                adapter.notifyDataSetChanged();
+                if (ticketInfos.size() != 0) {
+                    listView.smoothScrollToPosition(0);
+                }
             }
         });
     }
@@ -127,38 +315,89 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
         switch (view.getId()) {
             case R.id.llPass2:
-                indexSelected = 1;
-                updateFocus(indexSelected);
+                if (checkChoosePrevDay(86400000 * 2)) {
+                    if (indexTab == 1) {
+                        time_go -= (86400000 * 2);
+                    } else if (indexTab == 2)
+                        time_back -= (86400000 * 2);
+
+                    updateDayText();
+                    updateTimeActionbar();
+
+                    reqInitAPI();
+                } else {
+                    CommonUtils.showToast(this, getString(R.string.time_back_must_be_over_than_time_go));
+                }
+
                 break;
 
             case R.id.llPass1:
-                indexSelected = 2;
-                updateFocus(indexSelected);
+                if (checkChoosePrevDay(86400000)) {
+                    if (indexTab == 1) {
+                        time_go -= 86400000;
+                    } else if (indexTab == 2)
+                        time_back -= 86400000;
+
+                    updateDayText();
+                    updateTimeActionbar();
+
+                    reqInitAPI();
+                } else {
+                    CommonUtils.showToast(this, getString(R.string.time_back_must_be_over_than_time_go));
+                }
+
                 break;
 
             case R.id.llCurrent:
-                indexSelected = 3;
-                updateFocus(indexSelected);
+                updateDayText();
                 break;
 
             case R.id.llNext1:
-                indexSelected = 4;
-                updateFocus(indexSelected);
+                if (checkChooseNextDay(86400000)) {
+                    if (indexTab == 1)
+                        time_go += 86400000;
+                    else if (indexTab == 2)
+                        time_back += 86400000;
+                    updateDayText();
+                    updateTimeActionbar();
+
+                    reqInitAPI();
+                } else {
+                    CommonUtils.showToast(this, getString(R.string.time_go_must_be_less_than_time_back));
+                }
+
                 break;
 
             case R.id.llNext2:
-                indexSelected = 5;
-                updateFocus(indexSelected);
+                if (checkChooseNextDay(86400000 * 2)) {
+                    if (indexTab == 1)
+                        time_go += (86400000 * 2);
+                    else if (indexTab == 2)
+                        time_back += (86400000 * 2);
+                    updateDayText();
+                    updateTimeActionbar();
+
+                    reqInitAPI();
+                } else {
+                    CommonUtils.showToast(this, getString(R.string.time_go_must_be_less_than_time_back));
+                }
+
                 break;
 
             case R.id.btWaygo:
                 indexTab = 1;
                 focusColorTab(indexTab);
+
+                updateDayText();
+                updateTimeActionbar();
                 break;
 
             case R.id.btWayback:
                 indexTab = 2;
                 focusColorTab(indexTab);
+
+                updateDayText();
+                updateTimeActionbar();
                 break;
 
             case R.id.btBrief:
@@ -170,6 +409,110 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
     }
 
+    private boolean checkChooseNextDay(long nextDay) {
+        if (!isOneWay) {// phai 2 chieu moi set DK
+
+            if (indexTab == 1) {// CHon thoi gian di moi
+                if ((time_go + nextDay) > time_back)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkChoosePrevDay(long prevDay) {
+        if (!isOneWay) {
+
+            if (indexTab == 2) {
+                if ((time_back - prevDay) < time_go)
+                    return false;
+            }
+
+
+        }
+        return true;
+    }
+
+    private void reqInitAPI() {
+        CommonUtils.showProgressDialog(this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("authen_key", "canhdieuvietnet");
+        params.put("ip_address", CommonUtils.getIPAddress(this));
+
+        AppRequest.reqInitAPI(this, params, true, new DataRequestCallback<InitResObj>() {
+            @Override
+            public void onResult(InitResObj result, boolean continueWaiting) {
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
+                        session_key = result.data.session_key;
+                        SharedpreferencesUtils.getInstance(SearchFightResultActivity.this).save("session_key", session_key);
+
+                        searchFight();
+                    } else {
+                        session_key = "";
+                        CommonUtils.showToast(SearchFightResultActivity.this, result.message);
+                    }
+
+                } else {
+                    session_key = "";
+                }
+
+
+            }
+        });
+    }
+
+    private void searchFight() {
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        AppApplication app = AppApplication.getInstance();
+        params.put("session_key", session_key);
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("FromCityCode", app.FromCityCode);
+            jsonObject.put("ToCityCode", app.ToCityCode);
+            jsonObject.put("DepartDate", "/Date(" + time_go + ")/");
+
+            if (String.valueOf(time_back).equals("")) {
+                jsonObject.put("ReturnDate", "");
+            } else {
+                jsonObject.put("ReturnDate", "/Date(" + time_back + ")/");
+            }
+
+            jsonObject.put("AdultNum", app.countAdult);
+            jsonObject.put("ChildNum", app.countChild);
+            jsonObject.put("InfantNum", app.countIndent);
+
+            params.put("search_info", jsonObject);
+        } catch (Exception ex) {
+            Log.e("", "SeerchFight Error");
+        }
+
+
+        AppRequest.searchFight(this, params, true, new DataRequestCallback<SearchResObj>() {
+            @Override
+            public void onResult(SearchResObj result, boolean continueWaiting) {
+                CommonUtils.closeProgressDialog();
+                if (null != result) {
+                    if (result.status.equals("0")) {
+
+                        getTicket();
+                    } else {
+                        CommonUtils.showToast(SearchFightResultActivity.this, result.message);
+                    }
+
+                } else {
+
+                }
+
+
+            }
+        });
+
+    }
 
     private void resetTextColor() {
         tvPass2Day.setTextColor(ContextCompat.getColor(this, R.color.homeTextColor));
@@ -193,7 +536,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         llNext2.setBackgroundResource(R.drawable.bg_non_focus_right);
     }
 
-    private void updateFocus(int index) {
+    private void focusColorDate(int index) {
         resetTextColor();
         resetBackgroundColor();
 
@@ -314,8 +657,16 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
             long date = Long.parseLong(startDate);
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(date);
-            String s = String.format("%0.2d:%0.2d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.SECOND));
-            viewHolder.tvStartDate.setText(s);
+            String s = String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+
+            String endDate = ticketInfo.EndDate;
+            startDate = startDate.substring(6, startDate.length() - 2);
+            date = Long.parseLong(startDate);
+            calendar.setTimeInMillis(date);
+            String s2 = String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+
+
+            viewHolder.tvStartDate.setText(s + " - " + s2);
 
             viewHolder.tvAdultTotalPrice.setText(String.valueOf(ticketInfo.PriceCollection.get(0).AdultTotalPrice));
 

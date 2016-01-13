@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.ebksoft.flightbooking.R;
+
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -18,7 +20,7 @@ import java.util.Map;
 public class CommonUtils {
 
     static boolean isToastShowing = false;
-//    static Handler handler = new Handler();
+    //    static Handler handler = new Handler();
     static ProgressDialog progress;
 
     public static JSONObject buildJson(Map<String, Object> params) {
@@ -48,5 +50,22 @@ public class CommonUtils {
 
     public static void showToast(Context c, String message) {
         Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static ProgressDialog showProgressDialog(Context context) {
+
+        progress = new ProgressDialog(context);
+        progress.show();
+        progress.setCancelable(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.setContentView(R.layout.layout_custom_progress_dialog);
+
+        return progress;
+    }
+
+    public static void closeProgressDialog() {
+        if (progress != null) {
+            progress.dismiss();
+        }
     }
 }

@@ -44,17 +44,22 @@
     <string name="choose_time_go">Chọn ngày đi</string>
     <string name="choose_time_back">Chọn ngày về</string>
 
-    <!--TimeSquare Lib-->
-    <string name="Done">Done</string>
-    <string name="Customized">Customized</string>
-    <string name="Decorator">Decorator</string>
-    <string name="RTL">RTL</string>
-    <string name="Dialog">Dialog</string>
-    <string name="DisplayOnly">DisplayOnly</string>
-    <string name="Range">Range</string>
-    <string name="Multi">Multi</string>
-    <string name="Single">Single</string>
+    <string name="code_flight">SỐ HIỆU</string>
+    <string name="time_flight">HÀNH TRÌNH</string>
+    <string name="price_flight">GIÁ VÉ</string>
+    <string name="choose">CHỌN</string>
+    <string name="time_go_must_be_less_than_time_back">Ngày đi không được lớn hơn ngày về</string>
+    <string name="time_back_must_be_over_than_time_go">Ngày về không được nhỏ hơn ngày đi</string>
 
+    <string-array name="dayOfWeek">
+        <item>CN</item>
+        <item>Thứ 2</item>
+        <item>Thứ 3</item>
+        <item>Thứ 4</item>
+        <item>Thứ 5</item>
+        <item>Thứ 6</item>
+        <item>Thứ 7</item>
+    </string-array>
 
     <!--Local airport-->
     <string-array name="airport_name">

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.ebksoft.flightbooking.model.ResponseObj.InitResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.SearchResObj;
 import com.ebksoft.flightbooking.network.AppRequest;
+import com.ebksoft.flightbooking.utils.AppApplication;
 import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
@@ -40,6 +41,7 @@ public class HomeActivity extends AppCompatActivity
     public static final int TIME_GO_CODE = 1002;
     public static final int TIME_BACK_CODE = 1003;
 
+    private boolean isOneWay = true;
 
     private TextView txtTitle;
     private Button btOneWay, btRoundTrip;
@@ -154,6 +156,7 @@ public class HomeActivity extends AppCompatActivity
 
     private void reqInitAPI() {
 
+        CommonUtils.showProgressDialog(this);
         HashMap<String, Object> params = new HashMap<String, Object>();
 
         params.put("authen_key", "canhdieuvietnet");
@@ -210,14 +213,30 @@ public class HomeActivity extends AppCompatActivity
             Log.e("", "SeerchFight Error");
         }
 
+        AppApplication app = AppApplication.getInstance();
+        app.countAdult = countAdult;
+        app.countChild = countChild;
+        app.countIndent = countIndent;
+
+        app.FromCityCode = FromCityCode;
+        app.ToCityCode = ToCityCode;
 
         AppRequest.searchFight(this, params, true, new DataRequestCallback<SearchResObj>() {
             @Override
             public void onResult(SearchResObj result, boolean continueWaiting) {
-
+                CommonUtils.closeProgressDialog();
                 if (null != result) {
                     if (result.status.equals("0")) {
-                        startActivity(new Intent(HomeActivity.this, SearchFightResultActivity.class));
+                        Intent intent = new Intent(HomeActivity.this, SearchFightResultActivity.class);
+                        intent.putExtra("place_from", tvPlaceFromName.getText().toString());
+                        intent.putExtra("place_to", tvPlaceToName.getText().toString());
+
+                        intent.putExtra("time_go", DepartDate);
+
+                        if (!isOneWay)
+                            intent.putExtra("time_back", ReturnDate);
+
+                        startActivity(intent);
                     } else {
                         CommonUtils.showToast(HomeActivity.this, result.message);
                     }
@@ -273,14 +292,16 @@ public class HomeActivity extends AppCompatActivity
                 break;
 
             case R.id.btOneWay:
+                isOneWay = true;
                 rlTimeToParent.setVisibility(View.INVISIBLE);
-                imgFightBack.setVisibility(View.INVISIBLE);
+                imgFightBack.setVisibility(View.GONE);
 
                 btOneWay.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
                 btRoundTrip.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 break;
 
             case R.id.btRoundTrip:
+                isOneWay = false;
                 rlTimeToParent.setVisibility(View.VISIBLE);
                 imgFightBack.setVisibility(View.VISIBLE);
 
