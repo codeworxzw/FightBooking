@@ -35,122 +35,6 @@ public class HttpUtils {
     private static final String TAG = HttpUtils.class.getName();
     private static final int CONNECTION_TIMEOUT = 30000;
 
-//	public static String requestHttpPOST(String url, JSONObject json) {
-//
-//		URL path;
-//		HttpURLConnection urlConnection = null;
-//		JSONArray response = new JSONArray();
-//
-//		try {
-//			path = new URL(url);
-//			urlConnection = (HttpURLConnection) path.openConnection();
-//			urlConnection.setDoOutput(true);
-//			urlConnection.setRequestMethod("POST");
-//			urlConnection.setRequestProperty("Content-Type",
-//					"application/x-www-form-urlencoded");
-//
-//			int responseCode = urlConnection.getResponseCode();
-//
-//			if(responseCode == HttpStatus.SC_OK){
-//				String responseString = readStream(urlConnection.getInputStream());
-//				Log.v("CatalogClient", responseString);
-//				response = new JSONArray(responseString);
-//			}else{
-//				Log.v("CatalogClient", "Response code:"+ responseCode);
-//			}
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		} finally {
-//			if(urlConnection != null)
-//				urlConnection.disconnect();
-//		}
-//
-//		return response.toString();
-//
-//	}
-//
-//	private static String readStream(InputStream in) {
-//		BufferedReader reader = null;
-//		StringBuffer response = new StringBuffer();
-//		try {
-//			reader = new BufferedReader(new InputStreamReader(in));
-//			String line = "";
-//			while ((line = reader.readLine()) != null) {
-//				response.append(line);
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (reader != null) {
-//				try {
-//					reader.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//		return response.toString();
-//	}
-//
-//	public static String requestUrl(String url, String postParameters)
-//			throws Exception {
-//
-//		HttpURLConnection urlConnection = null;
-//		try {
-//			// create connection
-//			URL urlToRequest = new URL(url);
-//			urlConnection = (HttpURLConnection) urlToRequest.openConnection();
-//			urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
-//			urlConnection.setReadTimeout(30);
-//
-//			// handle POST parameters
-//			if (postParameters != null) {
-//
-//				urlConnection.setDoOutput(true);
-//				urlConnection.setRequestMethod("POST");
-//				urlConnection.setFixedLengthStreamingMode(
-//						postParameters.getBytes().length);
-//				urlConnection.setRequestProperty("Content-Type",
-//						"application/x-www-form-urlencoded");
-//
-//				//send the POST out
-//				PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
-//				out.print(postParameters);
-//				out.close();
-//			}
-//
-//			// handle issues
-//			int statusCode = urlConnection.getResponseCode();
-//			if (statusCode != HttpURLConnection.HTTP_OK) {
-//				// throw some exception
-//			}
-//
-//			// read output (only for GET)
-//			if (postParameters != null) {
-//				return null;
-//			} else {
-//				InputStream in =
-//						new BufferedInputStream(urlConnection.getInputStream());
-//				return readStream(in);
-//			}
-//
-//
-//        } catch (MalformedURLException e) {
-//            // handle invalid URL
-//        } catch (SocketTimeoutException e) {
-//            // hadle timeout
-//        } catch (IOException e) {
-//            // handle I/0
-//        } finally {
-//            if (urlConnection != null) {
-//                urlConnection.disconnect();
-//            }
-//        }
-//
-//		return null;
-//	}
-
     public static String requestHttpPOST(String url, JSONObject json) {
         String result = null;
         HttpPost httpPost = new HttpPost(url);
@@ -190,8 +74,8 @@ public class HttpUtils {
     public static String requestSSLPOST(String url, JSONObject json) {
         String result = null;
         HttpClient client = getNewHttpClient();
-        HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
-        HttpConnectionParams.setSoTimeout(client.getParams(), 10000);
+        HttpConnectionParams.setConnectionTimeout(client.getParams(), CONNECTION_TIMEOUT);
+        HttpConnectionParams.setSoTimeout(client.getParams(), CONNECTION_TIMEOUT);
         HttpResponse httpResponse;
         try {
             String stringUrl = url;

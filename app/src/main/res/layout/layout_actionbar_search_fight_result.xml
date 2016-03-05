@@ -4,6 +4,7 @@
     android:layout_height="?android:attr/actionBarSize"
     android:background="@color/colorPrimary">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,10 +14,10 @@
         <TextView
             android:id="@+id/tvPlaceFromTo"
             android:layout_width="wrap_content"
-            android:textSize="17sp"
             android:layout_height="wrap_content"
             android:text="TP HO CHI MINH - HA NOI"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/tvTimeGoTo"
@@ -28,5 +29,12 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/imvSetting"
+        android:layout_width="?android:attr/actionBarSize"
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_alignParentRight="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_settings" />
 
 </RelativeLayout>

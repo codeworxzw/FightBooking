@@ -50,6 +50,32 @@
     <string name="choose">CHỌN</string>
     <string name="time_go_must_be_less_than_time_back">Ngày đi không được lớn hơn ngày về</string>
     <string name="time_back_must_be_over_than_time_go">Ngày về không được nhỏ hơn ngày đi</string>
+    <string name="sort">SẮP XẾP</string>
+    <string name="time">Theo thời gian</string>
+    <string name="price">Theo giá</string>
+    <string name="filter">CHỌN LỌC</string>
+    <string name="content_desc"></string>
+
+    <string name="custommer_info">Thông tin khách hàng</string>
+    <string name="custommer_desc">Chúng tôi cần thu thập thông tin hành khách cho bạn và cho bất cứ ai đi cùng với bạn. Các tên mà bạn cung cấp phải khớp với các tên trên hộ chiếu của hành khách (đối với đi quốc tế) hoặc các tờ các nhân khác (đi nội địa, ví dụ chứng minh thư, giấy phép lái xe), và các giấy tờ này phải được xuất trình khi làm thủ tục check-in.</string>
+    <string name="custommer_need_to_be_enter">Trường bắt buộc phải nhập thông tin</string>
+    <string name="custommer_title">Hành khách: </string>
+    <string name="custommer_gender">Giới tính: </string>
+    <string name="custommer_name">Họ và tên: </string>
+    <string name="custommer_go">Hành lý đi: </string>
+    <string name="custommer_back">Hành lý về: </string>
+    <string name="custommer_finish">HOÀN TẤT</string>
+    
+    <!--Persional info-->
+    <string name="persional_info">Thông tin cá nhân</string>
+    <string name="persional_desc">Vui lòng cung cấp chi tiết liên hệ của bạn bên dưới. Chúng tôi có thể cần liên hệ với bạn nếu như có các thay đổi về chuyến bay.</string>
+    <string name="persional_name">Họ và tên</string>
+    <string name="persional_email">Email</string>
+    <string name="persional_phone">Điện thoại</string>
+    <string name="persional_address">Địa chỉ</string>
+    <string name="persional_special_req">Yêu cầu đặc biệt</string>
+
+
 
     <string-array name="dayOfWeek">
         <item>CN</item>

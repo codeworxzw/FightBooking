@@ -68,4 +68,28 @@ public class CommonUtils {
             progress.dismiss();
         }
     }
+
+    public static String getMonthYearString(int month, int year) {
+        String s = String.format("%s %d, %d", "Tháng", month, year);
+        return s;
+    }
+
+    public static String getDayString(int day){
+        String s = "Thứ ";
+        switch (day){
+            case 1:
+                s = "Chủ nhật";
+                break;
+
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                s += day;
+                break;
+        }
+        return s;
+    }
 }

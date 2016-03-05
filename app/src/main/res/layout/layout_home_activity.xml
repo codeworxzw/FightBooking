@@ -30,9 +30,9 @@
         android:id="@+id/passenger"
         layout="@layout/layout_home_passenger" />
 
-    <include
-        android:id="@+id/cabin"
-        layout="@layout/layout_home_cabin" />
+    <!--<include-->
+        <!--android:id="@+id/cabin"-->
+        <!--layout="@layout/layout_home_cabin" />-->
 
     <RelativeLayout
         android:layout_width="match_parent"

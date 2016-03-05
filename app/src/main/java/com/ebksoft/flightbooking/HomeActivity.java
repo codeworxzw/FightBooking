@@ -41,14 +41,12 @@ public class HomeActivity extends AppCompatActivity
     public static final int TIME_GO_CODE = 1002;
     public static final int TIME_BACK_CODE = 1003;
 
-    private boolean isOneWay = true;
 
     private TextView txtTitle;
     private Button btOneWay, btRoundTrip;
 
     private View rlTimeToParent;
 
-    private int countAdult = 1, countChild = 1, countIndent = 1;
     private Button btDownAdult, btUpAdult, btDownChild, btUpChild, btDownIndent, btUpIndent;
     private TextView tvAdult, tvChild, tvIndent;
 
@@ -61,11 +59,27 @@ public class HomeActivity extends AppCompatActivity
     private TextView tvDateGo, tvMonthYearGo, tvDayGo;
     private TextView tvDateTo, tvMonthYearTo, tvDayTo;
 
+    /*
+    Hình ảnh thể hiện nếu là 2 chiều
+     */
     private ImageView imgFightBack;
 
-    //value
+    /*
+    Biến xác định là đang chọn 1 chiều hay 2 chiều
+     */
+    private boolean isOneWay = true;
+
+    /*
+    Thời gian đi và về hiện tại đang được chon, tính bằng giây
+     */
+    private long ltimeGo, lTimeBack;
+
+    /*
+    Các giá trị gửi lên server
+     */
     private String session_key = "";
     private String FromCityCode = "", ToCityCode = "", DepartDate = "", ReturnDate = "";
+    private int countAdult = 1, countChild = 0, countIndent = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +128,11 @@ public class HomeActivity extends AppCompatActivity
         btDownIndent.setOnClickListener(this);
         btUpIndent.setOnClickListener(this);
 
-
-        btNext = (Button) findViewById(R.id.btNext);
-        btPrev = (Button) findViewById(R.id.btPrev);
-        btNext.setOnClickListener(this);
-        btPrev.setOnClickListener(this);
+/*Code for choose type of chair*/
+//        btNext = (Button) findViewById(R.id.btNext);
+//        btPrev = (Button) findViewById(R.id.btPrev);
+//        btNext.setOnClickListener(this);
+//        btPrev.setOnClickListener(this);
 
         tvTicketType = (TextView) findViewById(R.id.tvTicketType);
 
@@ -138,12 +152,15 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void loadData() {
+        // Title
         txtTitle.setText(getString(R.string.search_fight).toUpperCase(Locale.getDefault()));
 
         loadDefaultData();
     }
 
     private void loadDefaultData() {
+
+        //Place to go
         tvPlaceFromCode.setText("SGN");
         tvPlaceFromName.setText("Hồ Chí Minh");
 
@@ -152,7 +169,45 @@ public class HomeActivity extends AppCompatActivity
 
         FromCityCode = "SGN";
         ToCityCode = "HAN";
+
+        loadGoTime(Calendar.getInstance());
     }
+
+    private void loadGoTime(Calendar calendar){
+        ltimeGo = calendar.getTimeInMillis();
+        DepartDate = String.valueOf(ltimeGo);
+
+        int date = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        String monthYear = CommonUtils.getMonthYearString(month, year);
+        String strDay = CommonUtils.getDayString(day);
+
+        tvDateGo.setText(String.valueOf(date));
+        tvMonthYearGo.setText(monthYear);
+        tvDayGo.setText(strDay);
+    }
+
+    private void loadGoBackTime(Calendar calendar) {
+        lTimeBack = calendar.getTimeInMillis();
+        ReturnDate = String.valueOf(lTimeBack);
+
+        int date = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        String monthYear = CommonUtils.getMonthYearString(month, year);
+        String strDay = CommonUtils.getDayString(day);
+
+        tvDateTo.setText(String.valueOf(date));
+        tvMonthYearTo.setText(monthYear);
+        tvDayTo.setText(strDay);
+
+    }
+
 
     private void reqInitAPI() {
 
@@ -282,12 +337,14 @@ public class HomeActivity extends AppCompatActivity
             case R.id.rlTimeGo:
                 i = new Intent(this, ChooseTimeActivity.class);
                 i.putExtra("isRoundTrip", false);
+                i.putExtra("ReturnDate", ReturnDate);
                 startActivityForResult(i, TIME_GO_CODE);
                 break;
 
             case R.id.rlTimeTo:
                 i = new Intent(this, ChooseTimeActivity.class);
                 i.putExtra("isRoundTrip", true);
+                i.putExtra("DepartDate", DepartDate);
                 startActivityForResult(i, TIME_BACK_CODE);
                 break;
 
@@ -307,6 +364,14 @@ public class HomeActivity extends AppCompatActivity
 
                 btOneWay.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 btRoundTrip.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+
+                /*
+                Load ngay ve, mac dinh sau 2 ngay so voi ngay di
+                 */
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(ltimeGo + 2 * 86400 * 1000);
+
+                loadGoBackTime(calendar);
                 break;
 
             case R.id.btDownAdult:
@@ -387,12 +452,7 @@ public class HomeActivity extends AppCompatActivity
                     date = Long.parseLong(DepartDate);
                     calendar.setTimeInMillis(date);
 
-                    dayOfWeek = dayFormat.format(calendar.getTime());
-                    month = monthFormat.format(calendar.getTime());
-
-                    tvDateGo.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-                    tvMonthYearGo.setText(month + ", " + calendar.get(Calendar.YEAR));
-                    tvDayGo.setText(dayOfWeek);
+                    loadGoTime(calendar);
                     break;
 
                 case TIME_BACK_CODE:
@@ -400,12 +460,7 @@ public class HomeActivity extends AppCompatActivity
                     date = Long.parseLong(ReturnDate);
                     calendar.setTimeInMillis(date);
 
-                    dayOfWeek = dayFormat.format(calendar.getTime());
-                    month = monthFormat.format(calendar.getTime());
-
-                    tvDateTo.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-                    tvMonthYearTo.setText(month + ", " + calendar.get(Calendar.YEAR));
-                    tvDayTo.setText(dayOfWeek);
+                    loadGoBackTime(calendar);
                     break;
             }
         }

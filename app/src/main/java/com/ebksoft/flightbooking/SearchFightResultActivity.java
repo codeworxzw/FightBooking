@@ -1,16 +1,23 @@
 package com.ebksoft.flightbooking;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -45,11 +52,24 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     private View llPass2, llPass1, llCurrent, llNext1, llNext2;
     private Button btWaygo, btWayback, btBrief;
 
+    /*
+    * Index tab đang focus:
+    * 1: CHIEU DI
+    * 2: CHIEU VE
+    * 3: TOM TAT
+    * */
     private int indexTab = 1;
-//    private int indexSelected = 3;
 
-
+    /*
+    Mangr chứa danh sách các vé đang hiển thị
+    * */
     private List<TicketInfo> ticketInfos;
+
+    /*
+    * Mảng tạm, chưa danh sách vé lấy từ server về lần gọi API {#getTicket}, dung cho tính năng lọc
+    * */
+    private List<TicketInfo> temp;
+
     private CustomAdapter adapter;
     private ListView listView;
     private View headerView;
@@ -63,6 +83,18 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     private long time_go = 0, time_back = 0;
 
     private String session_key = "";
+
+    /*
+    * Chứa mã hãng và url của hảng tương ứng (dùng cho tính năng lọc)
+    * */
+
+    private List<String> FirmIDs, FirmImages;
+
+    private Dialog dialog;
+
+    /*Tình trạng danh sách đang sort theo tiêu chí nào*/
+    private boolean isSortByTime = false;
+    private boolean isSortByPrice = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,20 +144,31 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         btBrief.setOnClickListener(this);
 
         listView = (ListView) findViewById(R.id.listView);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                adapter.indexClick = i - 1;//Debug
+
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         headerView = getLayoutInflater().inflate(R.layout.layout_ticket_row_header, null);
 
         tvPlaceFromTo = (TextView) findViewById(R.id.tvPlaceFromTo);
         tvTimeGoTo = (TextView) findViewById(R.id.tvTimeGoTo);
+
+        findViewById(R.id.imvSetting).setOnClickListener(this);
     }
 
     @Override
     protected void loadData() {
         dayOfWeek = getResources().getStringArray(R.array.dayOfWeek);
 
+        init();
+
         showDataOnList();
 
-        // Thuc hien cac cong viec khac trong khi dang cho request
         loadDataActionbar();
 
         updateNumOfTab();
@@ -135,11 +178,16 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         focusColorDate(3);
 
         updateDayText();
+    }
 
-        // updateTimeActionbar();
+    private void init() {
+        FirmIDs = new ArrayList<>();
+        FirmImages = new ArrayList<>();
+
     }
 
     private void showDataOnList() {
+        temp = new ArrayList<>();
         ticketInfos = new ArrayList<>();
         adapter = new CustomAdapter(this, ticketInfos);
         listView.setAdapter(adapter);
@@ -147,6 +195,9 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         getTicket();
     }
 
+    /*
+    * Cập nhật các ngày trong tuần khi ngày đi thay đổi
+    * */
     private void updateDayText() {
         Calendar calendar = Calendar.getInstance();
 
@@ -206,6 +257,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     }
 
 
+    //Nếu chọn 1 chiều thì ẩn tab chiều về đi
     private void updateNumOfTab() {
         if (isOneWay) {
             btWayback.setVisibility(View.GONE);
@@ -241,6 +293,9 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
     }
 
+    /*
+    * Cập nhật thời gian hiển thị trên
+    * */
     private void updateTimeActionbar() {
         if (indexTab == 1) {
             long lTimeGo = time_go;
@@ -261,6 +316,9 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         updateTimeGoTo();
     }
 
+    /*
+    * Thể hiện thời gian về nếu có
+    * */
     private void updateTimeGoTo() {
         if (TextUtils.isEmpty(timeBack)) {
             tvTimeGoTo.setText(timeGo);
@@ -286,13 +344,24 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
                 listView.removeHeaderView(headerView);
                 listView.addHeaderView(headerView);
 
+                temp.clear();
                 ticketInfos.clear();
 
                 if (null != result) {
                     if (result.status.equals("0")) {
 
                         for (int i = 0; i < result.data.size(); i++) {
-                            ticketInfos.add(result.data.get(i));
+
+                            TicketInfo item = result.data.get(i);
+
+                            ticketInfos.add(item);
+                            temp.add(item);
+
+                            if (!FirmIDs.contains(String.valueOf(item.FirmID))) {
+                                FirmIDs.add(String.valueOf(item.FirmID));
+                                FirmImages.add(item.FirmImage);
+                            }
+
                         }
                     } else {
                         CommonUtils.showToast(mContext, result.message);
@@ -389,6 +458,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
                 focusColorTab(indexTab);
 
                 updateDayText();
+
                 updateTimeActionbar();
                 break;
 
@@ -397,6 +467,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
                 focusColorTab(indexTab);
 
                 updateDayText();
+
                 updateTimeActionbar();
                 break;
 
@@ -404,9 +475,173 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
                 indexTab = 3;
                 focusColorTab(indexTab);
                 break;
+
+            case R.id.imvSetting:
+                showDialog();
+                break;
         }
 
 
+    }
+
+    private void showDialog() {
+
+        View v = getLayoutInflater().inflate(R.layout.layout_custom_filter_dialog, null);
+
+        GridView gridView = (GridView) v.findViewById(R.id.gridView);
+        CustomBrankAdapter brankAdapter = new CustomBrankAdapter(this, FirmIDs, FirmImages);
+        gridView.setAdapter(brankAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                updateFilter(FirmIDs.get(i));
+
+                dialog.dismiss();
+            }
+        });
+
+        RadioButton rbTime = (RadioButton) v.findViewById(R.id.rbTime);
+        RadioButton rbPrice = (RadioButton) v.findViewById(R.id.rbPrice);
+
+
+        rbTime.setChecked(isSortByTime);
+        rbPrice.setChecked(isSortByPrice);
+
+        rbTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                isSortByTime = true;
+                isSortByPrice = false;
+
+                updateSort(0);//sort theo thoi gian
+            }
+        });
+
+        rbPrice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                isSortByTime = false;
+                isSortByPrice = true;
+
+                updateSort(1);//sort theo gia
+            }
+        });
+
+        v.findViewById(R.id.llTime).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isSortByTime = true;
+                isSortByPrice = false;
+                updateSort(0);
+            }
+        });
+        v.findViewById(R.id.llPrice).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isSortByTime = false;
+                isSortByPrice = true;
+                updateSort(1);
+            }
+        });
+
+        dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(v);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        int width = display.getWidth();
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.width = width;
+        wlp.gravity = Gravity.BOTTOM;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+
+        dialog.show();
+    }
+
+    /*
+    * Sort lại danh sách đã lấy từ server theo đk sort: 0_Sort theo time, 1_Sort theo gia
+    * */
+    private void updateSort(int index) {
+
+//        ticketInfos.clear();
+//        for (int i = 0;i<temp.size();i++){
+//            ticketInfos.add(temp.get(i));
+//        }
+
+        for (int i = 0; i < ticketInfos.size(); i++) {
+
+            for (int j = 0; j < ticketInfos.size(); j++) {
+
+                if (index == 0)
+                    ticketInfos.get(i).isTimeCampare = true;
+                else
+                    ticketInfos.get(i).isTimeCampare = false;
+
+                if (ticketInfos.get(i).compareTo(ticketInfos.get(j)) == 1) {
+
+                    swap(ticketInfos, i, j);
+                }
+
+            }
+
+        }
+
+        /*
+        Khi sort xong thì huy vị trí focus chọn trước đó
+        * */
+        adapter.indexClick = -1;
+
+        /*
+        Cập nhật danh sách và scroll về vị trí đầu tiên
+        * */
+        adapter.notifyDataSetChanged();
+        if (ticketInfos.size() != 0) {
+            listView.smoothScrollToPosition(0);
+        }
+
+        dialog.dismiss();
+    }
+
+    private void swap(List<TicketInfo> ticketInfos, int index1, int index2) {
+        TicketInfo t = ticketInfos.get(index1);
+        ticketInfos.set(index1, ticketInfos.get(index2));
+        ticketInfos.set(index2, t);
+    }
+
+    /*Lọc theo hãng*/
+    private void updateFilter(String filterID) {
+
+        //Xoá mảng chứa dự liệu hiện
+        ticketInfos.clear();
+
+        //Đổ dữ liệu được lưu ở mạng temp với đk mã hãng vào
+
+        for (int i = 0; i < temp.size(); i++) {
+            if (String.valueOf(temp.get(i).FirmID).equals(filterID)) {
+                ticketInfos.add(temp.get(i));
+            }
+        }
+
+        //Reset vi tri select click
+        adapter.indexClick = -1;//reset
+
+        //Cập nhật và scroll
+        adapter.notifyDataSetChanged();
+        if (ticketInfos.size() != 0) {
+            listView.smoothScrollToPosition(0);
+        }
+
+        if (isSortByTime)
+            updateSort(0);
+
+        if (isSortByPrice)
+            updateSort(1);
     }
 
     private boolean checkChooseNextDay(long nextDay) {
@@ -536,6 +771,9 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         llNext2.setBackgroundResource(R.drawable.bg_non_focus_right);
     }
 
+    /*
+    * Focus vào ngày đi
+    * */
     private void focusColorDate(int index) {
         resetTextColor();
         resetBackgroundColor();
@@ -575,25 +813,27 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
     }
 
+    //   Reset mau mac dinh
     private void resetColorTab() {
         btWaygo.setBackgroundResource(R.color.colorPrimary);
         btWayback.setBackgroundResource(R.color.colorPrimary);
         btBrief.setBackgroundResource(R.color.colorPrimary);
     }
 
+    // Focus vao tab (CHIEU DI, CHIEU VE, TOM TAT)
     private void focusColorTab(int index) {
         resetColorTab();
 
         switch (index) {
-            case 1:
+            case 1:// chieu di
                 btWaygo.setBackgroundResource(R.color.colorPrimaryDark);
                 break;
 
-            case 2:
+            case 2://chieu ve
                 btWayback.setBackgroundResource(R.color.colorPrimaryDark);
                 break;
 
-            case 3:
+            case 3://tom tat
                 btBrief.setBackgroundResource(R.color.colorPrimaryDark);
                 break;
         }
@@ -604,6 +844,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         List<TicketInfo> tickets;
         LayoutInflater inflater;
         Context context;
+        public int indexClick = -1;
 
         public CustomAdapter(Context context, List<TicketInfo> tickets) {
             this.tickets = tickets;
@@ -629,7 +870,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
+        public View getView(final int i, View view, ViewGroup viewGroup) {
 
             ViewHolder viewHolder;
             if (view == null) {
@@ -670,6 +911,12 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
             viewHolder.tvAdultTotalPrice.setText(String.valueOf(ticketInfo.PriceCollection.get(0).AdultTotalPrice));
 
+            if (i == indexClick) {
+                viewHolder.rbChoose.setChecked(true);
+            } else {
+                viewHolder.rbChoose.setChecked(false);
+            }
+
             return view;
         }
 
@@ -681,6 +928,61 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
             public TextView tvAdultTotalPrice;
             public RadioButton rbChoose;
         }
+    }
+
+    public class CustomBrankAdapter extends BaseAdapter {
+
+        private List<String> FirmIDs;
+        private List<String> FirmImages;
+        private LayoutInflater inflater;
+        private Context context;
+
+        public CustomBrankAdapter(Context c, List<String> FirmIDs, List<String> FirmImages) {
+            this.FirmIDs = FirmIDs;
+            this.FirmImages = FirmImages;
+            this.inflater = LayoutInflater.from(c);
+            this.context = c;
+        }
+
+        @Override
+        public int getCount() {
+            return FirmIDs.size();
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+
+            ViewHolderBrank viewHolderBrank;
+
+            if (null == view) {
+                view = this.inflater.inflate(R.layout.layout_filter_row_item, viewGroup, false);
+
+                viewHolderBrank = new ViewHolderBrank();
+                viewHolderBrank.imageView = (ImageView) view.findViewById(R.id.imageView);
+
+                view.setTag(viewHolderBrank);
+            } else {
+                viewHolderBrank = (ViewHolderBrank) view.getTag();
+            }
+
+            ImageUtils.load(this.context, viewHolderBrank.imageView, FirmImages.get(i));
+
+            return view;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+    }
+
+    public class ViewHolderBrank {
+        public ImageView imageView;
     }
 
 }
