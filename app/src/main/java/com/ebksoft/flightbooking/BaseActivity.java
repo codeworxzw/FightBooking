@@ -5,10 +5,13 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 
 /**
@@ -41,17 +44,20 @@ public abstract class BaseActivity extends Activity {
         }
     }
 
-    protected void initTitle() {
+    protected void initTitle(String title) {
         txtTitle = (TextView) findViewById(R.id.txtTitle);
+        if (txtTitle != null)
+            txtTitle.setText(title.toUpperCase(Locale.getDefault()));
     }
 
     protected void initButtonBack() {
-//        imgClose = (ImageView) findViewById(R.id.imgClose);
-//        imgClose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                finish();
-//            }
-//        });
+        imgClose = (ImageView) findViewById(R.id.imgClose);
+        if (null != imgClose)
+            imgClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
     }
 }

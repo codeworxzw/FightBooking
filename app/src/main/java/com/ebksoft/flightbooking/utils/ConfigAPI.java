@@ -15,4 +15,6 @@ public class ConfigAPI {
     public static final String API_INIT = "/initapi";
     public static final String API_SEARCH = "/search";
     public static final String API_GET_TICKET = "/getticket";
+    public static final String API_SELECT_TICKET = "/selectticket";
+    public static final String API_GET_BAG = "/GetBag";
 }

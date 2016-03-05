@@ -2,6 +2,7 @@ package com.ebksoft.flightbooking;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -19,12 +20,14 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.ebksoft.flightbooking.model.ResponseObj.GetTicketResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.InitResObj;
+import com.ebksoft.flightbooking.model.ResponseObj.SVResponseObj;
 import com.ebksoft.flightbooking.model.ResponseObj.SearchResObj;
 import com.ebksoft.flightbooking.model.TicketInfo;
 import com.ebksoft.flightbooking.network.AppRequest;
@@ -33,6 +36,7 @@ import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.ImageUtils;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
+import com.ebksoft.flightbooking.utils.ToastUtils;
 
 import org.json.JSONObject;
 
@@ -52,12 +56,35 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     private View llPass2, llPass1, llCurrent, llNext1, llNext2;
     private Button btWaygo, btWayback, btBrief;
 
+    private LinearLayout llSummary;
+
+    private CustomAdapter adapter;
+    private ListView listView;
+    private View headerView;
+
+    private TextView tvPlaceFromTo, tvTimeGoTo;
+
+    private String[] dayOfWeek;
+
+    private String timeGo = "", timeBack = "";
+    private long time_go = 0, time_back = 0;
+
+    private Dialog dialog;
+
     /*
-    * Index tab đang focus:
-    * 1: CHIEU DI
-    * 2: CHIEU VE
-    * 3: TOM TAT
-    * */
+   * Layout for man hình tóm tắt
+   * */
+    private View scSummary;
+
+    /*Session key*/
+    private String session_key = "";
+
+    /*
+   * Index tab đang focus:
+   * 1: CHIEU DI
+   * 2: CHIEU VE
+   * 3: TOM TAT
+   * */
     private int indexTab = 1;
 
     /*
@@ -66,23 +93,15 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     private List<TicketInfo> ticketInfos;
 
     /*
-    * Mảng tạm, chưa danh sách vé lấy từ server về lần gọi API {#getTicket}, dung cho tính năng lọc
-    * */
+  * Mảng tạm, chưa danh sách vé lấy từ server về lần gọi API {#getTicket}, dung cho tính năng lọc
+  * */
     private List<TicketInfo> temp;
 
-    private CustomAdapter adapter;
-    private ListView listView;
-    private View headerView;
 
-    private TextView tvPlaceFromTo, tvTimeGoTo;
-
+    /*
+    * true: One Way, false: round trip
+    * */
     private boolean isOneWay = true;
-    private String[] dayOfWeek;
-
-    private String timeGo = "", timeBack = "";
-    private long time_go = 0, time_back = 0;
-
-    private String session_key = "";
 
     /*
     * Chứa mã hãng và url của hảng tương ứng (dùng cho tính năng lọc)
@@ -90,11 +109,15 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
     private List<String> FirmIDs, FirmImages;
 
-    private Dialog dialog;
-
     /*Tình trạng danh sách đang sort theo tiêu chí nào*/
     private boolean isSortByTime = false;
     private boolean isSortByPrice = false;
+
+
+    /*
+    * Lưu thông tin VÉ khách hàng đã chọn để gưi lên server
+    * */
+    private TicketInfo ticketWayGo, ticketWayBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +130,8 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
     @Override
     protected void loadView() {
+
+        initButtonBack();
 
         llPass2 = findViewById(R.id.llPass2);
         llPass2.setOnClickListener(this);
@@ -147,9 +172,18 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                adapter.indexClick = i - 1;//Debug
+                int index = i - 1;
 
+                //Cap nhat index dang chon de refresh lai listview
+                adapter.indexClick = index;//Debug
                 adapter.notifyDataSetChanged();
+
+                //Luu ve nay lai de gui len server
+                if (indexTab == 1) {
+                    ticketWayGo = ticketInfos.get(index);
+                } else {
+                    ticketWayBack = ticketInfos.get(index);
+                }
             }
         });
 
@@ -159,6 +193,10 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         tvTimeGoTo = (TextView) findViewById(R.id.tvTimeGoTo);
 
         findViewById(R.id.imvSetting).setOnClickListener(this);
+        findViewById(R.id.llNext).setOnClickListener(this);
+
+        scSummary = findViewById(R.id.scSummary);
+        llSummary = (LinearLayout) findViewById(R.id.llSummary);
     }
 
     @Override
@@ -328,56 +366,6 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     }
 
 
-    private void getTicket() {
-
-        CommonUtils.showProgressDialog(this);
-        HashMap<String, Object> params = new HashMap<String, Object>();
-
-        params.put("session_key", SharedpreferencesUtils.getInstance(this).read("session_key"));
-        params.put("firm_id", "");
-
-        AppRequest.getTicket(this, params, true, new DataRequestCallback<GetTicketResObj>() {
-            @Override
-            public void onResult(GetTicketResObj result, boolean continueWaiting) {
-                CommonUtils.closeProgressDialog();
-
-                listView.removeHeaderView(headerView);
-                listView.addHeaderView(headerView);
-
-                temp.clear();
-                ticketInfos.clear();
-
-                if (null != result) {
-                    if (result.status.equals("0")) {
-
-                        for (int i = 0; i < result.data.size(); i++) {
-
-                            TicketInfo item = result.data.get(i);
-
-                            ticketInfos.add(item);
-                            temp.add(item);
-
-                            if (!FirmIDs.contains(String.valueOf(item.FirmID))) {
-                                FirmIDs.add(String.valueOf(item.FirmID));
-                                FirmImages.add(item.FirmImage);
-                            }
-
-                        }
-                    } else {
-                        CommonUtils.showToast(mContext, result.message);
-                    }
-
-                } else {
-                }
-
-                adapter.notifyDataSetChanged();
-                if (ticketInfos.size() != 0) {
-                    listView.smoothScrollToPosition(0);
-                }
-            }
-        });
-    }
-
     @Override
     public void onClick(View view) {
 
@@ -454,34 +442,177 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
                 break;
 
             case R.id.btWaygo:
-                indexTab = 1;
-                focusColorTab(indexTab);
-
-                updateDayText();
-
-                updateTimeActionbar();
+                tabWayGoClick();
                 break;
 
             case R.id.btWayback:
-                indexTab = 2;
-                focusColorTab(indexTab);
-
-                updateDayText();
-
-                updateTimeActionbar();
+                tabWayBackClick();
                 break;
 
             case R.id.btBrief:
-                indexTab = 3;
-                focusColorTab(indexTab);
+                tabSummaryClick();
                 break;
 
             case R.id.imvSetting:
                 showDialog();
                 break;
+
+            case R.id.llNext:
+                pressNext();
+                break;
         }
 
 
+    }
+
+    //Click vao Tab Chiều đi để lấy danh sách cá vé chiều đi
+    private void tabWayGoClick() {
+        indexTab = 1;
+
+        focusColorTab(indexTab);
+
+        updateDayText();
+
+        updateTimeActionbar();
+
+        loadTicketDepart();
+
+        hideSummaryScreen();
+    }
+
+    //Click vao Tab Chiều về để lấy danh sách cá vé chiều về
+    private void tabWayBackClick() {
+        indexTab = 2;
+        focusColorTab(indexTab);
+
+        updateDayText();
+
+        updateTimeActionbar();
+
+        loadTicketReturn();
+
+        hideSummaryScreen();
+    }
+
+    private void tabSummaryClick() {
+        indexTab = 3;
+        focusColorTab(indexTab);
+
+        showSummaryScreen();
+    }
+
+    //Bấm nút Next để thực hiện bước tiếp theo
+    private void pressNext() {
+
+        if (indexTab==1 && ticketWayGo == null) {
+            CommonUtils.showToast(this, "VUI LONG CHON VE LUOT DI");
+            return;
+        }
+
+        if (indexTab==2 && ticketWayBack == null) {
+            CommonUtils.showToast(this, "VUI LONG CHON VE LUOT VE");
+            return;
+        }
+
+        switch (indexTab) {
+            case 1:
+                if (!isOneWay) {
+                    // Next qua tab CHIEU VE
+                    tabWayBackClick();
+                } else {
+                    //Next qua tab TOM TAT
+                    tabSummaryClick();
+                }
+                break;
+
+            case 2:
+                //Next qua tab TOM TAT
+                tabSummaryClick();
+                break;
+
+            case 3:
+                //GUi thong tin ve da chon len Server
+                sendSelectedTicket();
+                break;
+        }
+    }
+
+    private void showSummaryScreen() {
+
+        llSummary.removeAllViews();
+
+        View goView = getLayoutInflater().inflate(R.layout.layout_summary_item, null);
+        View backView = getLayoutInflater().inflate(R.layout.layout_summary_item, null);
+
+        llSummary.addView(goView);
+        llSummary.addView(backView);
+
+        scSummary.setVisibility(View.VISIBLE);
+    }
+
+    //Ẩn layout summary screen
+    private void hideSummaryScreen() {
+        scSummary.setVisibility(View.GONE);
+    }
+
+    private void loadTicketDepart() {
+
+        ticketInfos.clear();
+
+        //Đổ dữ liệu được lưu ở mạng temp với đk mã hãng vào
+
+        for (int i = 0; i < temp.size(); i++) {
+            if (String.valueOf(temp.get(i).TypeID).equals("1")) {
+                ticketInfos.add(temp.get(i));
+            }
+        }
+
+        //Reset vi tri select click
+        adapter.indexClick = -1;//reset
+
+        //Cập nhật và scroll
+        adapter.notifyDataSetChanged();
+        if (ticketInfos.size() != 0) {
+            listView.smoothScrollToPosition(0);
+        }
+
+        if (isSortByTime)
+            updateSort(0);
+
+        if (isSortByPrice)
+            updateSort(1);
+
+        ToastUtils.toast(this, "Go: " + String.valueOf(ticketInfos.size()));
+    }
+
+    private void loadTicketReturn() {
+
+        ticketInfos.clear();
+
+        //Đổ dữ liệu được lưu ở mạng temp với đk mã hãng vào
+
+        for (int i = 0; i < temp.size(); i++) {
+            if (String.valueOf(temp.get(i).TypeID).equals("2")) {
+                ticketInfos.add(temp.get(i));
+            }
+        }
+
+        //Reset vi tri select click
+        adapter.indexClick = -1;//reset
+
+        //Cập nhật và scroll
+        adapter.notifyDataSetChanged();
+        if (ticketInfos.size() != 0) {
+            listView.smoothScrollToPosition(0);
+        }
+
+        if (isSortByTime)
+            updateSort(0);
+
+        if (isSortByPrice)
+            updateSort(1);
+
+        ToastUtils.toast(this, "Back: " + String.valueOf(ticketInfos.size()));
     }
 
     private void showDialog() {
@@ -592,10 +723,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
         }
 
-        /*
-        Khi sort xong thì huy vị trí focus chọn trước đó
-        * */
-        adapter.indexClick = -1;
+        resetFocus();
 
         /*
         Cập nhật danh sách và scroll về vị trí đầu tiên
@@ -628,8 +756,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
             }
         }
 
-        //Reset vi tri select click
-        adapter.indexClick = -1;//reset
+        resetFocus();
 
         //Cập nhật và scroll
         adapter.notifyDataSetChanged();
@@ -642,6 +769,24 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
         if (isSortByPrice)
             updateSort(1);
+    }
+
+    /*
+    * Reset lại trạng thái là chưa chọn vé nào
+    * */
+    private void resetFocus() {
+
+        //Reset vi tri select click (bỏ chọn)
+        adapter.indexClick = -1;//reset
+
+         /*
+        * Do huy focus nên vé đã chọn cũng bị huỷ luôn
+        * */
+        if (isOneWay) {
+            ticketWayGo = null;
+        } else {
+            ticketWayBack = null;
+        }
     }
 
     private boolean checkChooseNextDay(long nextDay) {
@@ -928,6 +1073,113 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
             public TextView tvAdultTotalPrice;
             public RadioButton rbChoose;
         }
+    }
+
+    private void getTicket() {
+
+        CommonUtils.showProgressDialog(this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("session_key", SharedpreferencesUtils.getInstance(this).read("session_key"));
+        params.put("firm_id", "");
+
+        AppRequest.getTicket(this, params, true, new DataRequestCallback<GetTicketResObj>() {
+            @Override
+            public void onResult(GetTicketResObj result, boolean continueWaiting) {
+                CommonUtils.closeProgressDialog();
+
+                listView.removeHeaderView(headerView);
+                listView.addHeaderView(headerView);
+
+                temp.clear();
+                ticketInfos.clear();
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
+
+                        for (int i = 0; i < result.data.size(); i++) {
+
+                            TicketInfo item = result.data.get(i);
+
+                            ticketInfos.add(item);
+                            temp.add(item);
+
+                            if (!FirmIDs.contains(String.valueOf(item.FirmID))) {
+                                FirmIDs.add(String.valueOf(item.FirmID));
+                                FirmImages.add(item.FirmImage);
+                            }
+
+                        }
+
+
+                        ToastUtils.toast(mContext, "Sum: " + String.valueOf(ticketInfos.size()));
+
+                        switch (indexTab) {
+                            case 1:
+                                loadTicketDepart();
+                                break;
+
+                            case 2:
+                                loadTicketReturn();
+                                break;
+                        }
+
+
+                    } else {
+                        CommonUtils.showToast(mContext, result.message);
+                    }
+
+                } else {
+                    CommonUtils.showToast(mContext, getString(R.string.connection_timeout));
+                }
+
+            }
+        });
+    }
+
+    private void sendSelectedTicket() {
+
+        CommonUtils.showProgressDialog(this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("session_key", SharedpreferencesUtils.getInstance(this).read("session_key"));
+
+        String TicketClass = "";
+
+        if (ticketWayGo.PriceCollection.size() != 0)
+            TicketClass = ticketWayGo.PriceCollection.get(0).TicketClass;
+        params.put("ticket_depart", String.format("%s_%s", ticketWayGo.TicketID, TicketClass));
+
+        if (isOneWay)
+            params.put("ticket_return", "");
+        else {
+
+            if (ticketWayBack.PriceCollection.size() != 0)
+                TicketClass = ticketWayBack.PriceCollection.get(0).TicketClass;
+            params.put("ticket_return", String.format("%s_%s", ticketWayBack.TicketID, TicketClass));
+        }
+
+        AppRequest.sendSelectedTicket(this, params, true, new DataRequestCallback<SVResponseObj>() {
+            @Override
+            public void onResult(SVResponseObj result, boolean continueWaiting) {
+                CommonUtils.closeProgressDialog();
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
+
+                        //Next qua man hinh Customer
+                        startActivity(new Intent(mContext, CustommerInfoActivity.class));
+
+                    } else {
+                        CommonUtils.showToast(mContext, result.message);
+                    }
+
+                } else {
+                    CommonUtils.showToast(mContext, getString(R.string.connection_timeout));
+                }
+
+            }
+        });
     }
 
     public class CustomBrankAdapter extends BaseAdapter {

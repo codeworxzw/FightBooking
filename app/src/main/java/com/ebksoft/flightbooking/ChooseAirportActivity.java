@@ -36,7 +36,7 @@ public class ChooseAirportActivity extends BaseActivity {
 
     @Override
     protected void loadView() {
-        initTitle();
+        initTitle(getString(R.string.choose_airport));
         initButtonBack();
 
         llSouth = (LinearLayout) findViewById(R.id.llSouth);
@@ -47,7 +47,6 @@ public class ChooseAirportActivity extends BaseActivity {
 
     @Override
     protected void loadData() {
-        txtTitle.setText(getString(R.string.choose_airport).toUpperCase(Locale.getDefault()));
 
         airportName = getResources().getStringArray(R.array.airport_name);
         airportCode = getResources().getStringArray(R.array.airport_code);

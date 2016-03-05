@@ -33,7 +33,7 @@ public class ChooseTimeActivity extends BaseActivity implements CalendarPickerVi
 
     @Override
     protected void loadView() {
-        initTitle();
+
         initButtonBack();
 
         Calendar nextYear = Calendar.getInstance();
@@ -55,9 +55,9 @@ public class ChooseTimeActivity extends BaseActivity implements CalendarPickerVi
         isRoundTrip = bundle.getBoolean("isRoundTrip");
 
         if (!isRoundTrip) {
-            txtTitle.setText(getString(R.string.choose_time_go).toUpperCase(Locale.getDefault()));
+            initTitle(getString(R.string.choose_time_go));
         } else {
-            txtTitle.setText(getString(R.string.choose_time_back).toUpperCase(Locale.getDefault()));
+            initTitle(getString(R.string.choose_time_back));
         }
 
         Date date;

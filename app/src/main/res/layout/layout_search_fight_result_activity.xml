@@ -57,22 +57,82 @@
 
         </LinearLayout>
 
-
-        <include
-            android:id="@+id/llTime"
-            layout="@layout/layout_search_fight_result_header" />
-
-        <ListView
-            android:id="@+id/listView"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:descendantFocusability="blocksDescendants"
-            android:scrollbars="none">
+            android:orientation="vertical">
 
-        </ListView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/llTime"
+                    layout="@layout/layout_search_fight_result_header" />
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:descendantFocusability="blocksDescendants"
+                    android:scrollbars="none">
+
+                </ListView>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/scSummary"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="#fff">
+
+                    <LinearLayout
+                        android:id="@+id/llSummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                </ScrollView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#fb824e"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="TỔNG CỘNG: 2,998,000 VND"
+                        android:textColor="#fff"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+        </FrameLayout>
+
 
         <RelativeLayout
+            android:id="@+id/llNext"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/colorPrimary">
@@ -96,7 +156,6 @@
                     android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/ic_fight" />
-
 
             </LinearLayout>
 

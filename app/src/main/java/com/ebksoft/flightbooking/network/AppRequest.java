@@ -2,8 +2,10 @@ package com.ebksoft.flightbooking.network;
 
 import android.content.Context;
 
+import com.ebksoft.flightbooking.model.ResponseObj.GetBagResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.GetTicketResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.InitResObj;
+import com.ebksoft.flightbooking.model.ResponseObj.SVResponseObj;
 import com.ebksoft.flightbooking.model.ResponseObj.SearchResObj;
 import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.ConfigAPI;
@@ -103,6 +105,66 @@ public class AppRequest {
                 JSONObject jsonRequest = CommonUtils.buildJson(params);
                 String result = HttpUtils.requestHttpPOST(url, jsonRequest);
                 GetTicketResObj obj = JsonParserUtils.parseJSONObjectToObject(result, callback.getType());
+                callback.setResult(obj);
+                t.callbackOnUIThread(callback, null, false);
+
+            }
+        }, priority);
+    }
+
+    public static void sendSelectedTicket(final Context context,
+                                 final HashMap<String, Object> params, final boolean forceUpdate,
+                                 final DataRequestCallback<SVResponseObj> callback) {
+
+        final String url = ConfigAPI.DOMAIN_HTTP
+                + ConfigAPI.API_SELECT_TICKET;
+
+        final ThreadManager t = ThreadManager.getInstance();
+
+        int priority;
+        if (forceUpdate) {
+            priority = ThreadManager.PRIORITY_BLOCKING;
+        } else {
+            priority = ThreadManager.PRIORITY_NORMAL;
+        }
+
+        t.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                JSONObject jsonRequest = CommonUtils.buildJson(params);
+                String result = HttpUtils.requestHttpPOST(url, jsonRequest);
+                SVResponseObj obj = JsonParserUtils.parseJSONObjectToObject(result, callback.getType());
+                callback.setResult(obj);
+                t.callbackOnUIThread(callback, null, false);
+
+            }
+        }, priority);
+    }
+
+    public static void getBag(final Context context,
+                                          final HashMap<String, Object> params, final boolean forceUpdate,
+                                          final DataRequestCallback<GetBagResObj> callback) {
+
+        final String url = ConfigAPI.DOMAIN_HTTP
+                + ConfigAPI.API_GET_BAG;
+
+        final ThreadManager t = ThreadManager.getInstance();
+
+        int priority;
+        if (forceUpdate) {
+            priority = ThreadManager.PRIORITY_BLOCKING;
+        } else {
+            priority = ThreadManager.PRIORITY_NORMAL;
+        }
+
+        t.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                JSONObject jsonRequest = CommonUtils.buildJson(params);
+                String result = HttpUtils.requestHttpPOST(url, jsonRequest);
+                GetBagResObj obj = JsonParserUtils.parseJSONObjectToObject(result, callback.getType());
                 callback.setResult(obj);
                 t.callbackOnUIThread(callback, null, false);
 
