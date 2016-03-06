@@ -1,5 +1,6 @@
 package com.ebksoft.flightbooking;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -160,7 +161,7 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
             String jsonString = new Gson().toJson(booking);
             JSONObject jsonObject = new JSONObject(jsonString);
             params.put("booking", jsonObject);
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
 
@@ -171,7 +172,7 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
         passenger.PassengerType = 1;
 
         long bt = System.currentTimeMillis();
-        String birthDay  = "/Date(" + bt + ")/";
+        String birthDay = "/Date(" + bt + ")/";
         passenger.Birthday = birthDay;
         passenger.DepartBagID = 213;
         passenger.DepartBagValue = 15;
@@ -187,7 +188,7 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
             JSONObject jsonObject = new JSONObject(jsonPassenger);
 
             jsonArray.put(jsonObject);
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
 
@@ -202,7 +203,37 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
                 if (null != result) {
                     if (result.status.equals("0")) {
 
+                        sendBooking();
 
+                    } else {
+                        CommonUtils.showToast(mContext, result.message);
+                    }
+
+                } else {
+                    CommonUtils.showToast(mContext, getString(R.string.connection_timeout));
+                }
+
+            }
+        });
+    }
+
+    private void sendBooking() {
+
+        CommonUtils.showProgressDialog(this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("session_key", SharedpreferencesUtils.getInstance(this).read("session_key"));
+
+
+        AppRequest.sendBooking(this, params, true, new DataRequestCallback<SVResponseObj>() {
+            @Override
+            public void onResult(SVResponseObj result, boolean continueWaiting) {
+                CommonUtils.closeProgressDialog();
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
+
+                        startActivity(new Intent(mContext, ConfirmTicketInfo.class));
 
                     } else {
                         CommonUtils.showToast(mContext, result.message);
@@ -223,7 +254,7 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private class Booking{
+    private class Booking {
         public int BookingID;
         public String ContactFirstName;
         public String ContactLastName;

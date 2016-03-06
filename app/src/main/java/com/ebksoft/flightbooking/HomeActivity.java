@@ -480,6 +480,15 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //Khi quay về màn hình này, cần reset tất cả dữ liệu lưu trữ trước đó
+        AppApplication.getInstance().resetData();
+    }
+
     private void initNav() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

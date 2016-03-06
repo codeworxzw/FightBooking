@@ -2,6 +2,7 @@ package com.ebksoft.flightbooking.network;
 
 import android.content.Context;
 
+import com.ebksoft.flightbooking.model.ResponseObj.BookingResultResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.GetBagResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.GetTicketResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.InitResObj;
@@ -201,4 +202,65 @@ public class AppRequest {
             }
         }, priority);
     }
+
+    public static void sendBooking(final Context context,
+                                          final HashMap<String, Object> params, final boolean forceUpdate,
+                                          final DataRequestCallback<SVResponseObj> callback) {
+
+        final String url = ConfigAPI.DOMAIN_HTTP
+                + ConfigAPI.API_BOOKING;
+
+        final ThreadManager t = ThreadManager.getInstance();
+
+        int priority;
+        if (forceUpdate) {
+            priority = ThreadManager.PRIORITY_BLOCKING;
+        } else {
+            priority = ThreadManager.PRIORITY_NORMAL;
+        }
+
+        t.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                JSONObject jsonRequest = CommonUtils.buildJson(params);
+                String result = HttpUtils.requestHttpPOST(url, jsonRequest);
+                SVResponseObj obj = JsonParserUtils.parseJSONObjectToObject(result, callback.getType());
+                callback.setResult(obj);
+                t.callbackOnUIThread(callback, null, false);
+
+            }
+        }, priority);
+    }
+
+    public static void getBookingResult(final Context context,
+                                   final HashMap<String, Object> params, final boolean forceUpdate,
+                                   final DataRequestCallback<BookingResultResObj> callback) {
+
+        final String url = ConfigAPI.DOMAIN_HTTP
+                + ConfigAPI.API_BOOKING_RESULT;
+
+        final ThreadManager t = ThreadManager.getInstance();
+
+        int priority;
+        if (forceUpdate) {
+            priority = ThreadManager.PRIORITY_BLOCKING;
+        } else {
+            priority = ThreadManager.PRIORITY_NORMAL;
+        }
+
+        t.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                JSONObject jsonRequest = CommonUtils.buildJson(params);
+                String result = HttpUtils.requestHttpPOST(url, jsonRequest);
+                BookingResultResObj obj = JsonParserUtils.parseJSONObjectToObject(result, callback.getType());
+                callback.setResult(obj);
+                t.callbackOnUIThread(callback, null, false);
+
+            }
+        }, priority);
+    }
+
 }

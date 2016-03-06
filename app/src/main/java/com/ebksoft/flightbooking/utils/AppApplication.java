@@ -20,7 +20,9 @@ public class AppApplication extends Application {
         super.onCreate();
     }
 
-    ///
+    /*
+    * Các giá trị cần lưu tạm để sử dụng
+    * */
 
     public boolean isInternetConnection = false;
 
@@ -29,6 +31,21 @@ public class AppApplication extends Application {
     public int countAdult = 0;
     public int countChild = 0;
     public int countIndent = 0;
+
+    public int indexChooseTicketGo = -1;
+    public int indexChooseTicketBack = -1;
+
+    public void resetData(){
+        FromCityCode = "";
+        ToCityCode = "";
+
+        countAdult = 0;
+        countChild = 0;
+        countIndent = 0;
+
+        indexChooseTicketGo = -1;
+        indexChooseTicketBack = -1;
+    }
 
 
 }

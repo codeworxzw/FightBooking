@@ -51,6 +51,11 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
+        <activity
+            android:name="com.ebksoft.flightbooking.ConfirmTicketInfo"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
     </application>
 
 </manifest>

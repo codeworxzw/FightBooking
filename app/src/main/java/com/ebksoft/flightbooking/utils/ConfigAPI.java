@@ -18,4 +18,7 @@ public class ConfigAPI {
     public static final String API_SELECT_TICKET = "/selectticket";
     public static final String API_GET_BAG = "/GetBag";
     public static final String API_ADD_PASSENGER = "/addpassengers";
+
+    public static final String API_BOOKING = "/booking";
+    public static final String API_BOOKING_RESULT = "/bookingresult";
 }
