@@ -88,6 +88,7 @@
                                     android:textStyle="bold" />
 
                                 <Spinner
+                                    android:id="@+id/spinnerGender"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
@@ -104,6 +105,7 @@
                                     android:textStyle="bold" />
 
                                 <EditText
+
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
@@ -159,10 +161,10 @@
 
             <!--Truong thong tin ca nhan-->
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#fff">
+                android:background="#fff"
+                android:orientation="vertical">
 
 
                 <TextView
@@ -191,12 +193,13 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/etName"
+                        android:id="@+id/etContactName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/border_edittext_persional_info"
-                        android:padding="10dp" />
+                        android:padding="10dp"
+                        android:text="Ngo Dinh Minh Duc" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -211,7 +214,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/border_edittext_persional_info"
-                        android:padding="10dp" />
+                        android:padding="10dp"
+                        android:text="duc.ndm@ebksolutions.com" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -226,7 +230,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/border_edittext_persional_info"
-                        android:padding="10dp" />
+                        android:padding="10dp"
+                        android:text="01698767890" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -241,22 +246,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/border_edittext_persional_info"
-                        android:padding="10dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/persional_special_req"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/etReq"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/border_edittext_persional_info"
-                        android:padding="10dp" />
+                        android:padding="10dp"
+                        android:text="12 Van Kiep, P12, Q Binh Thanh" />
 
                 </LinearLayout>
 

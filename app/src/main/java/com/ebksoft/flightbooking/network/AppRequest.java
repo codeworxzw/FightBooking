@@ -171,4 +171,34 @@ public class AppRequest {
             }
         }, priority);
     }
+
+    public static void addPassenger(final Context context,
+                              final HashMap<String, Object> params, final boolean forceUpdate,
+                              final DataRequestCallback<SVResponseObj> callback) {
+
+        final String url = ConfigAPI.DOMAIN_HTTP
+                + ConfigAPI.API_ADD_PASSENGER;
+
+        final ThreadManager t = ThreadManager.getInstance();
+
+        int priority;
+        if (forceUpdate) {
+            priority = ThreadManager.PRIORITY_BLOCKING;
+        } else {
+            priority = ThreadManager.PRIORITY_NORMAL;
+        }
+
+        t.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                JSONObject jsonRequest = CommonUtils.buildJson(params);
+                String result = HttpUtils.requestHttpPOST(url, jsonRequest);
+                SVResponseObj obj = JsonParserUtils.parseJSONObjectToObject(result, callback.getType());
+                callback.setResult(obj);
+                t.callbackOnUIThread(callback, null, false);
+
+            }
+        }, priority);
+    }
 }
