@@ -51,10 +51,12 @@
 
 
             <EditText
+                android:id="@+id/etPassengerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:background="#f2f2f2"
+                android:inputType="text"
                 android:padding="10dp">
 
             </EditText>
@@ -86,6 +88,7 @@
 
 
             <Spinner
+                style="@android:style/Widget.Spinner.DropDown"
                 android:id="@+id/spinnerGender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

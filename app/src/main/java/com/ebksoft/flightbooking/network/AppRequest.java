@@ -54,8 +54,8 @@ public class AppRequest {
     }
 
     public static void searchFight(final Context context,
-                                  final HashMap<String, Object> params, final boolean forceUpdate,
-                                  final DataRequestCallback<SearchResObj> callback) {
+                                   final HashMap<String, Object> params, final boolean forceUpdate,
+                                   final DataRequestCallback<SearchResObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_SEARCH;
@@ -84,8 +84,8 @@ public class AppRequest {
     }
 
     public static void getTicket(final Context context,
-                                  final HashMap<String, Object> params, final boolean forceUpdate,
-                                  final DataRequestCallback<GetTicketResObj> callback) {
+                                 final HashMap<String, Object> params, final boolean forceUpdate,
+                                 final DataRequestCallback<GetTicketResObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_GET_TICKET;
@@ -114,8 +114,8 @@ public class AppRequest {
     }
 
     public static void sendSelectedTicket(final Context context,
-                                 final HashMap<String, Object> params, final boolean forceUpdate,
-                                 final DataRequestCallback<SVResponseObj> callback) {
+                                          final HashMap<String, Object> params, final boolean forceUpdate,
+                                          final DataRequestCallback<SVResponseObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_SELECT_TICKET;
@@ -144,8 +144,8 @@ public class AppRequest {
     }
 
     public static void getBag(final Context context,
-                                          final HashMap<String, Object> params, final boolean forceUpdate,
-                                          final DataRequestCallback<GetBagResObj> callback) {
+                              final HashMap<String, Object> params, final boolean forceUpdate,
+                              final DataRequestCallback<GetBagResObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_GET_BAG;
@@ -174,8 +174,8 @@ public class AppRequest {
     }
 
     public static void addPassenger(final Context context,
-                              final HashMap<String, Object> params, final boolean forceUpdate,
-                              final DataRequestCallback<SVResponseObj> callback) {
+                                    final HashMap<String, Object> params, final boolean forceUpdate,
+                                    final DataRequestCallback<SVResponseObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_ADD_PASSENGER;
@@ -204,8 +204,8 @@ public class AppRequest {
     }
 
     public static void sendBooking(final Context context,
-                                          final HashMap<String, Object> params, final boolean forceUpdate,
-                                          final DataRequestCallback<SVResponseObj> callback) {
+                                   final HashMap<String, Object> params, final boolean forceUpdate,
+                                   final DataRequestCallback<SVResponseObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_BOOKING;
@@ -234,8 +234,8 @@ public class AppRequest {
     }
 
     public static void getBookingResult(final Context context,
-                                   final HashMap<String, Object> params, final boolean forceUpdate,
-                                   final DataRequestCallback<BookingResultResObj> callback) {
+                                        final HashMap<String, Object> params, final boolean forceUpdate,
+                                        final DataRequestCallback<BookingResultResObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_BOOKING_RESULT;

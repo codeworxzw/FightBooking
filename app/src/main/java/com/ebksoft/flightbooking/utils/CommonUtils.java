@@ -13,6 +13,8 @@ import com.ebksoft.flightbooking.R;
 import org.json.JSONObject;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by chauminhnhut on 12/1/15.
@@ -74,9 +76,9 @@ public class CommonUtils {
         return s;
     }
 
-    public static String getDayString(int day){
+    public static String getDayString(int day) {
         String s = "Thứ ";
-        switch (day){
+        switch (day) {
             case 1:
                 s = "Chủ nhật";
                 break;
@@ -91,5 +93,46 @@ public class CommonUtils {
                 break;
         }
         return s;
+    }
+
+    /**
+     * method is used for checking valid email id format.
+     *
+     * @param email
+     * @return boolean true for valid false for invalid
+     */
+    public static boolean isEmailValid(String email) {
+        boolean isValid = false;
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
+    }
+
+    public static boolean isPhoneValid(String phone) {
+
+        if (phone.length() != 10 && phone.length() != 11) {
+            return false;
+        }
+
+        if (phone.length() == 10) {
+            if (!phone.substring(0, 2).equals("09")) {
+                return false;
+            }
+        }
+
+        if (phone.length() == 11) {
+            if (!phone.substring(0, 2).equals("01")) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

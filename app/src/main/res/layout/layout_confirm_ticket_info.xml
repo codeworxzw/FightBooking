@@ -16,72 +16,11 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/textCustommerCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/custommer_code"
-            android:textColor="#3d90c2"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvCustommerCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/textCustommerCode"
-            android:text="105509"
-            android:textColor="#e90a02" />
-
-        <TextView
-            android:id="@+id/textWayToPay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textCustommerCode"
-            android:layout_marginTop="5dp"
-            android:text="@string/way_to_pay"
-            android:textColor="#3d90c2"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvWayToPay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textCustommerCode"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/textWayToPay"
-            android:text="Bank"
-            android:textColor="#e90a02" />
-
-        <TextView
-            android:id="@+id/textStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textWayToPay"
-            android:layout_marginTop="5dp"
-            android:text="@string/status"
-            android:textColor="#3d90c2"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textWayToPay"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/textStatus"
-            android:text="Chưa thanh toán"
-            android:textColor="#e90a02" />
-
-        <TextView
             android:id="@+id/textDeadlinePay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textStatus"
-            android:layout_marginTop="5dp"
+
+            android:layout_margin="5dp"
             android:text="@string/deadline_to_pay"
             android:textColor="#3d90c2"
             android:textStyle="bold" />
@@ -90,7 +29,6 @@
             android:id="@+id/tvDeadlineToPay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textStatus"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/textDeadlinePay"
@@ -102,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textDeadlinePay"
-            android:layout_marginTop="5dp"
+            android:layout_margin="5dp"
             android:text="@string/brief_ticket"
             android:textColor="#3d90c2"
             android:textStyle="bold" />
@@ -112,10 +50,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textBriefTicket"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:text="These code examples were ranked by Codota’s semantic indexing as the best open source examples for Android\nThese code examples were ranked by Codota’s semantic indexing as the best open source examples for Android"
             android:textColor="#e90a02" />
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/btKeepBooking"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:text="@string/keep_booking"
+        android:textColor="#fff"
+        android:textSize="30dp" />
 
 </RelativeLayout>

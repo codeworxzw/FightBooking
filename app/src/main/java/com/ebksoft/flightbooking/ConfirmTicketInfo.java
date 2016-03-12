@@ -1,6 +1,8 @@
 package com.ebksoft.flightbooking;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.ebksoft.flightbooking.model.BagModel;
@@ -21,9 +23,9 @@ import java.util.HashMap;
 /**
  * Created by chauminhnhut on 3/6/16.
  */
-public class ConfirmTicketInfo extends BaseActivity {
+public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListener {
 
-    private TextView tvCustommerCode, tvWayToPay, tvStatus, tvDeadlineToPay, tvBriefTicket;
+    private TextView tvDeadlineToPay, tvBriefTicket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +41,11 @@ public class ConfirmTicketInfo extends BaseActivity {
 
         initTitle(getString(R.string.title_info));
         initButtonBack();
+        
+        tvDeadlineToPay = (TextView) findViewById(R.id.tvDeadlineToPay);
+        tvBriefTicket = (TextView) findViewById(R.id.tvBriefTicket);
 
-        tvCustommerCode = (TextView)findViewById(R.id.tvCustommerCode);
-        tvWayToPay = (TextView)findViewById(R.id.tvWayToPay);
-        tvStatus = (TextView)findViewById(R.id.tvStatus);
-        tvDeadlineToPay = (TextView)findViewById(R.id.tvDeadlineToPay);
-        tvBriefTicket = (TextView)findViewById(R.id.tvBriefTicket);
+        findViewById(R.id.btKeepBooking).setOnClickListener(this);
     }
 
     @Override
@@ -73,13 +74,13 @@ public class ConfirmTicketInfo extends BaseActivity {
 
                         int start = data.HoldToDate.indexOf("(");
                         int end = data.HoldToDate.indexOf(")");
-                        String time = data.HoldToDate.substring(start+1, end);
-                        if(time.length()==13){
+                        String time = data.HoldToDate.substring(start + 1, end);
+                        if (time.length() == 13) {
                             long val = Long.parseLong(time);
-                            Date date=new Date(val);
+                            Date date = new Date(val);
                             SimpleDateFormat df2 = new SimpleDateFormat("HH:mm dd/MM/yyyy");
                             tvDeadlineToPay.setText(df2.format(date));
-                        }else{
+                        } else {
                             tvDeadlineToPay.setText("...");
                         }
 
@@ -95,5 +96,12 @@ public class ConfirmTicketInfo extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.btKeepBooking) {
+            startActivity(new Intent(this, HomeActivity.class));
+        }
     }
 }

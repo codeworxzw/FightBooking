@@ -2,6 +2,8 @@ package com.ebksoft.flightbooking;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -36,9 +38,22 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
 
     private EditText etContactName, etEmail, etPhone, etAddress;
 
+    /*
+    * Chứa 2 danh sách thông tin giỏ hàng (đi và về)
+    *
+    * @Note: vì danh sách trên spinner chỉ để xem, và thông qua index trong spinner để lấy thông tin gửi lên server
+    * */
+
+    private List<BagModel> lstBagModelGo, lstBagModelBack;
+
+    /*
+    * Chứa các chuỗi hiển thị trên Spinner hàng hoá
+    * */
     private List<String> lstBagPriceWays, lstBagPriceWaysBack;
+
     private ArrayAdapter<String> dataAdapterWays;
     private ArrayAdapter<String> dataAdapterWaysBack;
+    private ArrayAdapter<String> adapterGenner;
 
     private ScrollView scrollView;
     private LinearLayout llContentPassenger;
@@ -91,8 +106,19 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
         countChild = application.countChild;
         countIndent = application.countIndent;
 
+
+        lstBagModelGo = new ArrayList<>();
+        lstBagModelBack = new ArrayList<>();
+
         lstBagPriceWays = new ArrayList<>();
         lstBagPriceWaysBack = new ArrayList<>();
+
+        List<String> dataGender = new ArrayList<>();
+        dataGender.add("Nam");
+        dataGender.add("Nữ");
+
+        adapterGenner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dataGender);
+        adapterGenner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         getBag();
 
@@ -122,8 +148,10 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
                             s = String.format("%dKg - %d VND", b.BagValue, b.BagPrice);
 
                             if (b.BagForWays == 1) {
+                                lstBagModelGo.add(b);
                                 lstBagPriceWays.add(s);
                             } else {
+                                lstBagModelBack.add(b);
                                 lstBagPriceWaysBack.add(s);
                             }
 
@@ -176,12 +204,6 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
             /*
             * Spinner giới tính
             * */
-            List<String> dataGender = new ArrayList<>();
-            dataGender.add("Nam");
-            dataGender.add("Nữ");
-
-            ArrayAdapter<String> adapterGenner = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dataGender);
-            adapterGenner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerGender.setAdapter(adapterGenner);
 
 
@@ -197,6 +219,103 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
         scrollView.setVisibility(View.VISIBLE);
     }
 
+    private JSONArray getPassengerInfoFromForm() {
+
+        JSONArray jsonArray = new JSONArray();
+
+        for (int i = 0; i < llContentPassenger.getChildCount(); i++) {
+
+            View view = llContentPassenger.getChildAt(i);
+            EditText etName = (EditText) view.findViewById(R.id.etPassengerName);
+            String passsengerName = etName.getText().toString();
+
+            if (TextUtils.isEmpty(passsengerName)) {
+                CommonUtils.showToast(this, getString(R.string.please_enter_full_name_passenger));
+                return null;
+            }
+
+            /*
+            * Nhận biết first name qua dấu khoảng trắng đầu tiên
+            * */
+
+            int indexBlank = passsengerName.indexOf(" ");
+
+            String firstName = "", lastName = "";
+            if (indexBlank != -1) {
+                firstName = passsengerName.substring(0, indexBlank);
+                lastName = passsengerName.substring(indexBlank + 1, passsengerName.length());
+            } else {
+                firstName = passsengerName;
+            }
+
+            PassengerModel passenger = new PassengerModel();
+            passenger.FirstName = firstName;
+            passenger.LastName = lastName;
+
+            /*
+            * Do việc add theo thứ tự nên ta có thể sếp loại theo index
+            * */
+
+            if (i < countAdult) {
+                passenger.PassengerType = 1;//adult
+            } else if (i < countAdult + countChild) {
+                passenger.PassengerType = 2;//child
+            } else {
+                passenger.PassengerType = 3;//indent
+            }
+
+
+            /*
+            * Birthday: để mặc định, server tự xử lý
+            * */
+
+            long bt = System.currentTimeMillis();
+            String birthDay = "/Date(" + bt + ")/";
+            passenger.Birthday = birthDay;
+
+
+            /*
+            * Lấy thông tin Kg giỏ sách (hàng hoá)
+            * */
+
+            Spinner spinnerBagGo = (Spinner) view.findViewById(R.id.spinnerBagGo);
+            int indexGo = spinnerBagGo.getSelectedItemPosition();
+            BagModel b = lstBagModelGo.get(indexGo);
+            passenger.DepartBagID = b.BagID;
+            passenger.DepartBagValue = b.BagValue;
+
+             /*
+            * Lấy thông tin Kg giỏ sách (hàng hoá) về
+            * */
+
+            Spinner spinnerBagBack = (Spinner) view.findViewById(R.id.spinnerBagBack);
+            int indexBack = spinnerBagBack.getSelectedItemPosition();
+            BagModel bb = lstBagModelBack.get(indexBack);
+            passenger.ReturnBagID = bb.BagID;
+            passenger.ReturnBagValue = bb.BagValue;
+
+
+            /*
+            * Thông tin giới tín đc lấy từ spinner
+            * */
+            Spinner spinnerGender = (Spinner) view.findViewById(R.id.spinnerGender);
+            if (spinnerGender.getSelectedItemPosition() == 0)
+                passenger.Sex = "M";
+            else
+                passenger.Sex = "F";
+            try {
+                String jsonPassenger = new Gson().toJson(passenger);
+                JSONObject jsonObject = new JSONObject(jsonPassenger);
+
+                jsonArray.put(jsonObject);
+            } catch (Exception ex) {
+                Log.e("", ex.getMessage());
+            }
+        }
+
+        return jsonArray;
+    }
+
     /*
     * Gui thong tin Passenger lên server
     * */
@@ -207,53 +326,47 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
 
         params.put("session_key", SharedpreferencesUtils.getInstance(this).read("session_key"));
 
+        JSONArray jsonArray = getPassengerInfoFromForm();
+        if (jsonArray == null) {
+            CommonUtils.closeProgressDialog();
+            return;
+        }
+        params.put("passengers", jsonArray);
+
+
+        //Check DK nguoi lien he
+        if(!checkContactInfo()){
+            CommonUtils.closeProgressDialog();
+            return;
+        }
+
         Booking booking = new Booking();
         String name = etContactName.getText().toString();
-        int indexFirstSpace = name.indexOf(" ");
+        int indexBlank = name.indexOf(" ");
 
-        booking.ContactFirstName = name.substring(0, indexFirstSpace);
-        booking.ContactLastName = name.substring(indexFirstSpace, name.length() - 1);
+        String firstName = "", lastName = "";
+        if (indexBlank != -1) {
+            firstName = name.substring(0, indexBlank);
+            lastName = name.substring(indexBlank + 1, name.length());
+        } else {
+            firstName = name;
+        }
+
+        booking.ContactFirstName = firstName;
+        booking.ContactLastName = lastName;
         booking.ContactAddress = etAddress.getText().toString();
         booking.ContactEmail = etEmail.getText().toString();
         booking.ContactPhone = etPhone.getText().toString();
+
 
         try {
             String jsonString = new Gson().toJson(booking);
             JSONObject jsonObject = new JSONObject(jsonString);
             params.put("booking", jsonObject);
         } catch (Exception ex) {
-
+            Log.e("", ex.getMessage());
+            return;
         }
-
-        //
-        PassengerModel passenger = new PassengerModel();
-        passenger.FirstName = "Duc";
-        passenger.LastName = "Ngo Dinh Minh";
-        passenger.PassengerType = 1;
-
-        long bt = System.currentTimeMillis();
-        String birthDay = "/Date(" + bt + ")/";
-        passenger.Birthday = birthDay;
-        passenger.DepartBagID = 213;
-        passenger.DepartBagValue = 15;
-        passenger.ReturnBagID = 214;
-        passenger.ReturnBagValue = 20;
-
-        passenger.Sex = "M";
-
-        JSONArray jsonArray = new JSONArray();
-
-        try {
-            String jsonPassenger = new Gson().toJson(passenger);
-            JSONObject jsonObject = new JSONObject(jsonPassenger);
-
-            jsonArray.put(jsonObject);
-        } catch (Exception ex) {
-
-        }
-
-        params.put("passengers", jsonArray);
-
 
         AppRequest.addPassenger(this, params, true, new DataRequestCallback<SVResponseObj>() {
             @Override
@@ -275,6 +388,44 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
 
             }
         });
+    }
+
+    private boolean checkContactInfo() {
+
+        String name = etContactName.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            CommonUtils.showToast(this, getString(R.string.please_enter_full_name_contact_guy));
+            return false;
+        }
+
+        String email = etEmail.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            CommonUtils.showToast(this, getString(R.string.please_enter_email_contact_guy));
+            return false;
+        }
+
+        if (!CommonUtils.isEmailValid(email)) {
+            CommonUtils.showToast(this, getString(R.string.email_wrong_format));
+            return false;
+        }
+
+        String phone = etPhone.getText().toString();
+        if (TextUtils.isEmpty(phone)) {
+            CommonUtils.showToast(this, getString(R.string.please_enter_phone_contact_guy));
+            return false;
+        }
+
+        if (!CommonUtils.isPhoneValid(phone)) {
+            CommonUtils.showToast(this, getString(R.string.phone_wrong_format));
+            return false;
+        }
+
+        String address = etAddress.getText().toString();
+        if (TextUtils.isEmpty(address)) {
+            CommonUtils.showToast(this, getString(R.string.please_enter_address_contact_guy));
+            return false;
+        }
+        return true;
     }
 
     private void sendBooking() {

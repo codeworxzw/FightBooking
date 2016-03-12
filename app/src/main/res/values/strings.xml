@@ -77,7 +77,6 @@
     <string name="persional_special_req">Yêu cầu đặc biệt</string>
 
 
-
     <!--Confirm ticket info-->
     <string name="title_info">Thông tin đơn hàng</string>
     <string name="custommer_code">Mã đơn hàng:</string>
@@ -85,7 +84,7 @@
     <string name="status">Tình trạng:</string>
     <string name="deadline_to_pay">Hạn thanh toán:</string>
     <string name="brief_ticket">Tóm tắt vé:</string>
-
+    <string name="keep_booking">TIẾP TỤC ĐẶT VÉ</string>
 
     <!--Other-->
     <string name="please_choose_go_ticket">Vui lòng chọn vé lượt đi</string>
@@ -93,6 +92,14 @@
     <string name="go_way">Chuyến đi</string>
     <string name="back_way">Chuyến về</string>
 
+    <string name="please_enter_full_name_passenger">Vui lòng nhập đầy đủ họ tên hành khách</string>
+
+    <string name="please_enter_full_name_contact_guy">Vui lòng nhập họ tên người liên hệ</string>
+    <string name="please_enter_email_contact_guy">Vui lòng nhập email liên hệ</string>
+    <string name="email_wrong_format">Email sai định dạng</string>
+    <string name="please_enter_phone_contact_guy">Vui lòng nhập số điện thoại liên hệ</string>
+    <string name="phone_wrong_format">Số điện thoai sai định dạng</string>
+    <string name="please_enter_address_contact_guy">Vui lòng nhập địa chỉ người liên hệ</string>
 
 
     <string-array name="dayOfWeek">
