@@ -194,12 +194,25 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
             spinnerBagGo.setAdapter(dataAdapterWays);
 
 
+
             /*
             * Spinner bag back
             * */
-            dataAdapterWaysBack = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lstBagPriceWaysBack);
-            dataAdapterWaysBack.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerBagBack.setAdapter(dataAdapterWaysBack);
+
+            View viewBagBack = view.findViewById(R.id.viewBagBack);
+
+            if (application.isOneWay) {
+                /*
+                * Nếu 1 chiều thì ẩn đi Bag back
+                * */
+                viewBagBack.setVisibility(View.GONE);
+            } else {
+
+                dataAdapterWaysBack = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lstBagPriceWaysBack);
+                dataAdapterWaysBack.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerBagBack.setAdapter(dataAdapterWaysBack);
+            }
+
 
             /*
             * Spinner giới tính
@@ -284,15 +297,30 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
             passenger.DepartBagID = b.BagID;
             passenger.DepartBagValue = b.BagValue;
 
-             /*
-            * Lấy thông tin Kg giỏ sách (hàng hoá) về
-            * */
 
-            Spinner spinnerBagBack = (Spinner) view.findViewById(R.id.spinnerBagBack);
-            int indexBack = spinnerBagBack.getSelectedItemPosition();
-            BagModel bb = lstBagModelBack.get(indexBack);
-            passenger.ReturnBagID = bb.BagID;
-            passenger.ReturnBagValue = bb.BagValue;
+            if (application.isOneWay) {
+
+                /*
+                * 1 chiều nên ko có thông tin về
+                * */
+
+                passenger.ReturnBagID = 0;
+                passenger.ReturnBagValue = 0;
+
+            } else {
+
+                 /*
+                 * Lấy thông tin Kg giỏ sách (hàng hoá) về
+                 * */
+                
+                Spinner spinnerBagBack = (Spinner) view.findViewById(R.id.spinnerBagBack);
+                int indexBack = spinnerBagBack.getSelectedItemPosition();
+                BagModel bb = lstBagModelBack.get(indexBack);
+                passenger.ReturnBagID = bb.BagID;
+                passenger.ReturnBagValue = bb.BagValue;
+            }
+
+
 
 
             /*
@@ -335,7 +363,7 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
 
 
         //Check DK nguoi lien he
-        if(!checkContactInfo()){
+        if (!checkContactInfo()) {
             CommonUtils.closeProgressDialog();
             return;
         }

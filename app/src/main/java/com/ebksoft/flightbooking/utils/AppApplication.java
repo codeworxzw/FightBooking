@@ -35,6 +35,8 @@ public class AppApplication extends Application {
     public int indexChooseTicketGo = -1;
     public int indexChooseTicketBack = -1;
 
+    public boolean isOneWay = true;
+
     public void resetData(){
         FromCityCode = "";
         ToCityCode = "";

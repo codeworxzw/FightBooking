@@ -81,6 +81,8 @@ public class HomeActivity extends AppCompatActivity
     private String FromCityCode = "", ToCityCode = "", DepartDate = "", ReturnDate = "";
     private int countAdult = 1, countChild = 0, countIndent = 0;
 
+    private AppApplication app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -268,7 +270,7 @@ public class HomeActivity extends AppCompatActivity
             Log.e("", "SeerchFight Error");
         }
 
-        AppApplication app = AppApplication.getInstance();
+        app = AppApplication.getInstance();
         app.countAdult = countAdult;
         app.countChild = countChild;
         app.countIndent = countIndent;
@@ -290,6 +292,8 @@ public class HomeActivity extends AppCompatActivity
 
                         if (!isOneWay)
                             intent.putExtra("time_back", ReturnDate);
+
+                        app.isOneWay = isOneWay;
 
                         startActivity(intent);
                     } else {

@@ -3,6 +3,7 @@ package com.ebksoft.flightbooking;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ebksoft.flightbooking.model.BagModel;
@@ -11,6 +12,7 @@ import com.ebksoft.flightbooking.model.ResponseObj.BookingResultResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.GetBagResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.SVResponseObj;
 import com.ebksoft.flightbooking.network.AppRequest;
+import com.ebksoft.flightbooking.utils.AppApplication;
 import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
@@ -40,8 +42,17 @@ public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListe
     protected void loadView() {
 
         initTitle(getString(R.string.title_info));
-        initButtonBack();
-        
+        //initButtonBack();
+
+        ImageView imgClose = (ImageView) findViewById(R.id.imgClose);
+        if (null != imgClose)
+            imgClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    doneProgress();
+                }
+            });
+
         tvDeadlineToPay = (TextView) findViewById(R.id.tvDeadlineToPay);
         tvBriefTicket = (TextView) findViewById(R.id.tvBriefTicket);
 
@@ -101,7 +112,18 @@ public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btKeepBooking) {
-            startActivity(new Intent(this, HomeActivity.class));
+            doneProgress();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        doneProgress();
+    }
+
+    private void doneProgress() {
+        startActivity(new Intent(this, HomeActivity.class));
+
+        AppApplication.getInstance().resetData();
     }
 }

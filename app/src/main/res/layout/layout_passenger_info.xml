@@ -88,7 +88,6 @@
 
 
             <Spinner
-                style="@android:style/Widget.Spinner.DropDown"
                 android:id="@+id/spinnerGender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -135,41 +134,51 @@
 
             </Spinner>
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/viewBagBack"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/title3"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/title3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/custommer_back"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/title3"
+                        android:text="*"
+                        android:textColor="#f00"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+
+                <Spinner
+                    android:id="@+id/spinnerBagBack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="@string/custommer_back"
-                    android:textStyle="bold" />
+                    android:background="#f2f2f2"
+                    android:padding="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/title3"
-                    android:text="*"
-                    android:textColor="#f00"
-                    android:textStyle="bold" />
-
-            </RelativeLayout>
+                </Spinner>
 
 
-            <Spinner
-                android:id="@+id/spinnerBagBack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="#f2f2f2"
-                android:padding="10dp">
+            </LinearLayout>
 
-            </Spinner>
 
         </LinearLayout>
 

@@ -738,8 +738,8 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         String s = String.format("%02d:%02d, %02d/%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
 
         String endDate = ticketInfo.EndDate;
-        startDate = startDate.substring(6, startDate.length() - 2);
-        date = Long.parseLong(startDate);
+        endDate = endDate.substring(6, endDate.length() - 2);
+        date = Long.parseLong(endDate);
         calendar.setTimeInMillis(date);
         String s2 = String.format("%02d:%02d, %02d/%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
 
@@ -1464,8 +1464,8 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
             String s = String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 
             String endDate = ticketInfo.EndDate;
-            startDate = startDate.substring(6, startDate.length() - 2);
-            date = Long.parseLong(startDate);
+            endDate = endDate.substring(6, endDate.length() - 2);
+            date = Long.parseLong(endDate);
             calendar.setTimeInMillis(date);
             String s2 = String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 
