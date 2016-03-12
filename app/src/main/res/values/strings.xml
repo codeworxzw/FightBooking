@@ -60,7 +60,7 @@
 
     <string name="custommer_info">Thông tin khách hàng</string>
     <string name="custommer_desc">Chúng tôi cần thu thập thông tin hành khách cho bạn và cho bất cứ ai đi cùng với bạn. Các tên mà bạn cung cấp phải khớp với các tên trên hộ chiếu của hành khách (đối với đi quốc tế) hoặc các tờ các nhân khác (đi nội địa, ví dụ chứng minh thư, giấy phép lái xe), và các giấy tờ này phải được xuất trình khi làm thủ tục check-in.</string>
-    <string name="custommer_need_to_be_enter">Trường bắt buộc phải nhập thông tin</string>
+    <string name="custommer_need_to_be_enter">trường bắt buộc phải nhập thông tin</string>
     <string name="custommer_title">Hành khách: </string>
     <string name="custommer_gender">Giới tính: </string>
     <string name="custommer_name">Họ và tên: </string>

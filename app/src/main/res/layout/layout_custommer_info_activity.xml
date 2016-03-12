@@ -8,10 +8,12 @@
         layout="@layout/layout_actionbar_normal" />
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/actionbar"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,114 +47,40 @@
                     android:layout_below="@+id/tvDesc"
                     android:orientation="vertical">
 
-                    <TextView
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        android:text="@string/custommer_need_to_be_enter"
-                        android:textStyle="bold" />
+                        android:layout_margin="5dp">
 
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#f00">
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/star"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="3dp"
-                            android:background="#fff"
-                            android:orientation="vertical">
+                            android:layout_centerVertical="true"
+                            android:text="*"
+                            android:textColor="#f00"
+                            android:textStyle="bold" />
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginTop="5dp"
-                                android:text="@string/custommer_title" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="20dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginTop="5dp"
-                                    android:text="@string/custommer_gender"
-                                    android:textStyle="bold" />
-
-                                <Spinner
-                                    android:id="@+id/spinnerGender"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:padding="20dp">
-
-                                </Spinner>
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginTop="5dp"
-                                    android:text="@string/custommer_name"
-                                    android:textStyle="bold" />
-
-                                <EditText
-
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:padding="10dp">
-
-                                </EditText>
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginTop="5dp"
-                                    android:text="@string/custommer_go"
-                                    android:textStyle="bold" />
-
-                                <Spinner
-                                    android:id="@+id/spinnerBagGo"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:padding="20dp">
-
-                                </Spinner>
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginTop="5dp"
-                                    android:text="@string/custommer_back"
-                                    android:textStyle="bold" />
-
-                                <Spinner
-                                    android:id="@+id/spinnerBagBack"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:padding="20dp">
-
-                                </Spinner>
-
-                            </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_toRightOf="@+id/star"
+                            android:text="@string/custommer_need_to_be_enter"
+                            android:textStyle="bold" />
 
 
-                        </LinearLayout>
+                    </RelativeLayout>
 
-                    </FrameLayout>
+                    <LinearLayout
+                        android:id="@+id/llContentPassenger"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
@@ -161,10 +89,12 @@
 
             <!--Truong thong tin ca nhan-->
             <LinearLayout
+                android:id="@+id/llPersonnalInfo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#fff"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
 
                 <TextView
@@ -186,11 +116,29 @@
                     android:background="#fff"
                     android:orientation="vertical">
 
-                    <TextView
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/persional_name"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/title4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/persional_name"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_toRightOf="@+id/title4"
+                            android:text="*"
+                            android:textColor="#f00"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
 
                     <EditText
                         android:id="@+id/etContactName"
@@ -201,12 +149,31 @@
                         android:padding="10dp"
                         android:text="Ngo Dinh Minh Duc" />
 
-                    <TextView
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/persional_email"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/title5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/persional_email"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_toRightOf="@+id/title5"
+                            android:text="*"
+                            android:textColor="#f00"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
 
                     <EditText
                         android:id="@+id/etEmail"
@@ -217,12 +184,30 @@
                         android:padding="10dp"
                         android:text="duc.ndm@ebksolutions.com" />
 
-                    <TextView
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/persional_phone"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/title6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/persional_phone"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_toRightOf="@+id/title6"
+                            android:text="*"
+                            android:textColor="#f00"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
 
                     <EditText
                         android:id="@+id/etPhone"
@@ -233,12 +218,30 @@
                         android:padding="10dp"
                         android:text="01698767890" />
 
-                    <TextView
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/persional_address"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/title7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/persional_address"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_toRightOf="@+id/title7"
+                            android:text="*"
+                            android:textColor="#f00"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
 
                     <EditText
                         android:id="@+id/etAddress"

@@ -255,15 +255,13 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
         application = AppApplication.getInstance();
 
+        countAdult = application.countAdult;
+        countChild = application.countChild;
+        countIndent = application.countIndent;
+
         temp = new ArrayList<>();
         ticketInfos = new ArrayList<>();
 
-        Bundle b = getIntent().getExtras();
-        if (b != null) {
-            countAdult = b.getInt("countAdult", 0);
-            countChild = b.getInt("countChild", 0);
-            countIndent = b.getInt("countIndent", 0);
-        }
     }
 
     private void showDataOnList() {
@@ -728,8 +726,8 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         ImageUtils.load(this, imvLogoFirm, ticketInfo.FirmImage);
 
         /*Mã thành phố đi, đến*/
-        tvFirmNameFrom.setText(ticketInfo.FromCityCode);
-        tvFirmNameTo.setText(ticketInfo.ToCityCode);
+        tvFirmNameFrom.setText(application.FromCityCode);
+        tvFirmNameTo.setText(application.ToCityCode);
 
         /*Thời gian đi đến*/
         String startDate = ticketInfo.StartDate;

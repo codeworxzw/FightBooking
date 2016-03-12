@@ -288,11 +288,6 @@ public class HomeActivity extends AppCompatActivity
 
                         intent.putExtra("time_go", DepartDate);
 
-                        //Số lượng hành khách
-                        intent.putExtra("countAdult", countAdult);
-                        intent.putExtra("countChild", countChild);
-                        intent.putExtra("countIndent", countIndent);
-
                         if (!isOneWay)
                             intent.putExtra("time_back", ReturnDate);
 
