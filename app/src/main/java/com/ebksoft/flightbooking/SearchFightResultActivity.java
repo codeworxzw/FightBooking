@@ -38,6 +38,7 @@ import com.ebksoft.flightbooking.utils.ImageUtils;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -74,6 +75,8 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     private View rlTotalPrice;
 
     private AppApplication application;
+
+    private TextView tvTotalBill;
 
     /*
    * Layout for man hình tóm tắt
@@ -144,6 +147,18 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
     public boolean isChangeTab = false;
 
+    /*
+    * Số lượng Passenger
+    * */
+
+    private int countAdult = 0, countChild = 0, countIndent = 0;
+
+    /*
+    * Tổng tiền vé
+    * */
+
+    private double totalBill = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,6 +226,8 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         llSummary = (LinearLayout) findViewById(R.id.llSummary);
 
         rlTotalPrice = findViewById(R.id.rlTotalPrice);
+
+        tvTotalBill = (TextView)findViewById(R.id.tvTotalBill);
     }
 
     @Override
@@ -240,6 +257,13 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
         temp = new ArrayList<>();
         ticketInfos = new ArrayList<>();
+
+        Bundle b = getIntent().getExtras();
+        if (b != null) {
+            countAdult = b.getInt("countAdult", 0);
+            countChild = b.getInt("countChild", 0);
+            countIndent = b.getInt("countIndent", 0);
+        }
     }
 
     private void showDataOnList() {
@@ -637,13 +661,16 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         llSummary.removeAllViews();
 
         if (ticketWayGo != null) {
-            llSummary.addView(createTicketItemSummary(ticketWayGo));
+            llSummary.addView(createTicketItemSummary(ticketWayGo, true));
         }
 
         if (ticketWayBack != null) {
-            llSummary.addView(createTicketItemSummary(ticketWayBack));
+            llSummary.addView(createTicketItemSummary(ticketWayBack, false));
         }
 
+
+        String price  = String.format("TỔNG CỘNG: %1$,.1f VND",totalBill);
+        tvTotalBill.setText(price);
 
         if (ticketWayGo != null) {
             rlTotalPrice.setVisibility(View.VISIBLE);
@@ -654,8 +681,115 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         scSummary.setVisibility(View.VISIBLE);
     }
 
-    private View createTicketItemSummary(TicketInfo ticketInfo) {
+    private View createTicketItemSummary(TicketInfo ticketInfo, boolean isWayGo) {
         View view = getLayoutInflater().inflate(R.layout.layout_summary_item, null);
+        TextView tvWayFlight = (TextView) view.findViewById(R.id.tvWayFlight);
+        TextView tvCodeFlight = (TextView) view.findViewById(R.id.tvCodeFlight);
+        ImageView imvLogoFirm = (ImageView) view.findViewById(R.id.imvLogoFirm);
+
+        TextView tvFirmNameFrom = (TextView) view.findViewById(R.id.tvFirmNameFrom);
+        TextView tvFirmNameTo = (TextView) view.findViewById(R.id.tvFirmNameTo);
+
+
+        TextView tvTimeFrom = (TextView) view.findViewById(R.id.tvTimeFrom);
+        TextView tvTimeTo = (TextView) view.findViewById(R.id.tvTimeTo);
+
+        TextView tvNumOfAdult = (TextView) view.findViewById(R.id.tvNumOfAdult);
+        TextView tvNumOfAdult2 = (TextView) view.findViewById(R.id.tvNumOfAdult2);
+        TextView tvPriceOfAdult = (TextView) view.findViewById(R.id.tvPriceOfAdult);
+
+        TextView tvNumOfChild = (TextView) view.findViewById(R.id.tvNumOfChild);
+        TextView tvNumOfChild2 = (TextView) view.findViewById(R.id.tvNumOfChild2);
+        TextView tvPriceOfChild = (TextView) view.findViewById(R.id.tvPriceOfChild);
+
+        TextView tvNumOfIndent = (TextView) view.findViewById(R.id.tvNumOfIndent);
+        TextView tvNumOfIndent2 = (TextView) view.findViewById(R.id.tvNumOfIndent2);
+        TextView tvPriceOfIndent = (TextView) view.findViewById(R.id.tvPriceOfIndent);
+
+        TextView tvTotalPrice = (TextView) view.findViewById(R.id.tvTotalPrice);
+
+        View viewParentAdult = view.findViewById(R.id.viewParentAdult);
+        View viewParentChild = view.findViewById(R.id.viewParentChild);
+        View viewParentIndent = view.findViewById(R.id.viewParentIndent);
+
+        //Set Value
+
+        /*Chuyến đi hay về*/
+        if (isWayGo) {
+            tvWayFlight.setText(getString(R.string.go_way).toUpperCase(Locale.getDefault()));
+        } else {
+            tvWayFlight.setText(getString(R.string.back_way).toUpperCase(Locale.getDefault()));
+        }
+
+        /*Tên Chuyến bay*/
+        tvCodeFlight.setText(ticketInfo.PlanInfoCollection.get(0).PlanName);
+
+        /*Logo hãng*/
+        ImageUtils.load(this, imvLogoFirm, ticketInfo.FirmImage);
+
+        /*Mã thành phố đi, đến*/
+        tvFirmNameFrom.setText(ticketInfo.FromCityCode);
+        tvFirmNameTo.setText(ticketInfo.ToCityCode);
+
+        /*Thời gian đi đến*/
+        String startDate = ticketInfo.StartDate;
+        startDate = startDate.substring(6, startDate.length() - 2);
+        long date = Long.parseLong(startDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        String s = String.format("%02d:%02d, %02d/%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
+
+        String endDate = ticketInfo.EndDate;
+        startDate = startDate.substring(6, startDate.length() - 2);
+        date = Long.parseLong(startDate);
+        calendar.setTimeInMillis(date);
+        String s2 = String.format("%02d:%02d, %02d/%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1);
+
+        tvTimeFrom.setText(s);
+        tvTimeTo.setText(s2);
+
+        /*Nếu có người lớn đi*/
+        double adultPrice = ticketInfo.PriceCollection.get(0).AdultTotalPrice;
+        if (countAdult != 0) {
+            tvNumOfAdult.setText(String.valueOf(countAdult));
+            tvNumOfAdult2.setText(String.valueOf(countAdult) + " x ");
+
+            String price  = String.format("%1$,.1f VND",adultPrice);
+            tvPriceOfAdult.setText(price);
+        } else {
+            viewParentAdult.setVisibility(View.GONE);
+        }
+
+        /*Nếu có trẻ em*/
+        double childPrice = ticketInfo.PriceCollection.get(0).ChildTotalPrice;
+        if (countChild != 0) {
+            tvNumOfChild.setText(String.valueOf(countChild));
+            tvNumOfChild2.setText(String.valueOf(countChild) + " x ");
+
+            String price  = String.format("%1$,.1f VND",childPrice);
+            tvPriceOfChild.setText(price);
+        } else {
+            viewParentChild.setVisibility(View.GONE);
+        }
+
+        /*Nếu có sơ sinh*/
+        double indentPrice = ticketInfo.PriceCollection.get(0).BabyTotalPrice;
+        if (countIndent != 0) {
+            tvNumOfIndent.setText(String.valueOf(countIndent));
+            tvNumOfIndent2.setText(String.valueOf(countIndent) + " x ");
+
+            String price  = String.format("%1$,.1f VND",indentPrice);
+            tvPriceOfIndent.setText(price);
+        } else {
+            viewParentIndent.setVisibility(View.GONE);
+        }
+
+        double totalPrice = countAdult * adultPrice + countChild * childPrice + countIndent * indentPrice;
+        String strTotal = String.format("%1$,.1f VND",totalPrice);
+        tvTotalPrice.setText(strTotal);
+
+        totalBill+=totalPrice;
+
         return view;
     }
 

@@ -90,7 +90,8 @@
     <!--Other-->
     <string name="please_choose_go_ticket">Vui lòng chọn vé lượt đi</string>
     <string name="please_choose_back_ticket">Vui lòng chọn vé lượt về</string>
-
+    <string name="go_way">Chuyến đi</string>
+    <string name="back_way">Chuyến về</string>
 
 
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:padding="5dp"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -11,18 +11,28 @@
         android:padding="5dp">
 
         <TextView
+            android:id="@+id/tvWayFlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_centerVertical="true"
             android:text="CHUYEN DI"
             android:textColor="#db5f3c"
             android:textStyle="bold" />
 
+
+        <ImageView
+            android:id="@+id/imvLogoFirm"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toLeftOf="@+id/tvCodeFlight" />
+
         <TextView
+            android:id="@+id/tvCodeFlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
             android:text="VN 7234"
             android:textColor="#db5f3c"
             android:textStyle="bold" />
@@ -45,11 +55,13 @@
                 android:id="@+id/tvFirmNameFrom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:text="SGN"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvTimeFrom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvFirmNameFrom"
@@ -69,11 +81,13 @@
                 android:id="@+id/tvFirmNameTo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:text="HAN"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvTimeTo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvFirmNameTo"
@@ -99,58 +113,107 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/viewParentAdult"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp">
 
             <TextView
+                android:id="@+id/tvNumOfAdult"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1 người lớn:" />
+                android:text="1" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tvNumOfAdult"
+                android:text=" người lớn" />
+
+            <TextView
+                android:id="@+id/tvNumOfAdult2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/tvPriceOfAdult"
+                android:text="1" />
+
+            <TextView
+                android:id="@+id/tvPriceOfAdult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="1 x 1,499,000 VND" />
+                android:text=" x 1,499,000 VND" />
 
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/viewParentChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp">
 
+
             <TextView
+                android:id="@+id/tvNumOfChild"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1 trẻ em:" />
+                android:text="1" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tvNumOfChild"
+                android:text=" trẻ em" />
+
+            <TextView
+                android:id="@+id/tvNumOfChild2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/tvPriceOfChild"
+                android:text="1" />
+
+            <TextView
+                android:id="@+id/tvPriceOfChild"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="1 x 1,499,000 VND" />
+                android:text=" x 1,499,000 VND" />
 
 
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/viewParentIndent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp">
 
             <TextView
+                android:id="@+id/tvNumOfIndent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1 sơ sinh:" />
+                android:text="1" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tvNumOfIndent"
+                android:text=" sơ sinh" />
+
+            <TextView
+                android:id="@+id/tvNumOfIndent2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/tvPriceOfIndent"
+                android:text="1" />
+
+            <TextView
+                android:id="@+id/tvPriceOfIndent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="1 x 1,499,000 VND" />
+                android:text=" x 1,499,000 VND" />
 
 
         </RelativeLayout>
