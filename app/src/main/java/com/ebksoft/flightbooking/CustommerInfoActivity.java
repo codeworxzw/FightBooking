@@ -312,7 +312,7 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
                  /*
                  * Lấy thông tin Kg giỏ sách (hàng hoá) về
                  * */
-                
+
                 Spinner spinnerBagBack = (Spinner) view.findViewById(R.id.spinnerBagBack);
                 int indexBack = spinnerBagBack.getSelectedItemPosition();
                 BagModel bb = lstBagModelBack.get(indexBack);

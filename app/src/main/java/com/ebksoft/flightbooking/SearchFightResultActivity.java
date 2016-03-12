@@ -227,7 +227,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
         rlTotalPrice = findViewById(R.id.rlTotalPrice);
 
-        tvTotalBill = (TextView)findViewById(R.id.tvTotalBill);
+        tvTotalBill = (TextView) findViewById(R.id.tvTotalBill);
     }
 
     @Override
@@ -267,6 +267,11 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     private void showDataOnList() {
 
         adapter = new CustomAdapter(this, ticketInfos);
+
+        if (listView.getHeaderViewsCount() == 0)
+            listView.addHeaderView(headerView);
+
+        headerView.setVisibility(View.GONE);
         listView.setAdapter(adapter);
 
         getTicket();
@@ -667,7 +672,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         }
 
 
-        String price  = String.format("TỔNG CỘNG: %1$,.1f VND",totalBill);
+        String price = String.format("TỔNG CỘNG: %1$,.1f VND", totalBill);
         tvTotalBill.setText(price);
 
         if (ticketWayGo != null) {
@@ -752,7 +757,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
             tvNumOfAdult.setText(String.valueOf(countAdult));
             tvNumOfAdult2.setText(String.valueOf(countAdult) + " x ");
 
-            String price  = String.format("%1$,.1f VND",adultPrice);
+            String price = String.format("%1$,.1f VND", adultPrice);
             tvPriceOfAdult.setText(price);
         } else {
             viewParentAdult.setVisibility(View.GONE);
@@ -764,7 +769,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
             tvNumOfChild.setText(String.valueOf(countChild));
             tvNumOfChild2.setText(String.valueOf(countChild) + " x ");
 
-            String price  = String.format("%1$,.1f VND",childPrice);
+            String price = String.format("%1$,.1f VND", childPrice);
             tvPriceOfChild.setText(price);
         } else {
             viewParentChild.setVisibility(View.GONE);
@@ -776,17 +781,17 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
             tvNumOfIndent.setText(String.valueOf(countIndent));
             tvNumOfIndent2.setText(String.valueOf(countIndent) + " x ");
 
-            String price  = String.format("%1$,.1f VND",indentPrice);
+            String price = String.format("%1$,.1f VND", indentPrice);
             tvPriceOfIndent.setText(price);
         } else {
             viewParentIndent.setVisibility(View.GONE);
         }
 
         double totalPrice = countAdult * adultPrice + countChild * childPrice + countIndent * indentPrice;
-        String strTotal = String.format("%1$,.1f VND",totalPrice);
+        String strTotal = String.format("%1$,.1f VND", totalPrice);
         tvTotalPrice.setText(strTotal);
 
-        totalBill+=totalPrice;
+        totalBill += totalPrice;
 
         return view;
     }
@@ -1506,8 +1511,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
             public void onResult(GetTicketResObj result, boolean continueWaiting) {
                 CommonUtils.closeProgressDialog();
 
-                listView.removeHeaderView(headerView);
-                listView.addHeaderView(headerView);
+                headerView.setVisibility(View.VISIBLE);
 
                 temp.clear();
                 ticketInfos.clear();
