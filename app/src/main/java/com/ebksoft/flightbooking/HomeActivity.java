@@ -175,7 +175,7 @@ public class HomeActivity extends AppCompatActivity
         loadGoTime(Calendar.getInstance());
     }
 
-    private void loadGoTime(Calendar calendar){
+    private void loadGoTime(Calendar calendar) {
         ltimeGo = calendar.getTimeInMillis();
         DepartDate = String.valueOf(ltimeGo);
 
@@ -379,13 +379,14 @@ public class HomeActivity extends AppCompatActivity
                 break;
 
             case R.id.btDownAdult:
-                if (countAdult != 0)
+                if (countAdult != 1)
                     countAdult--;
                 updateNumPassenger();
                 break;
 
             case R.id.btUpAdult:
-                countAdult++;
+                if (canCountUp() && countAdult < 9)
+                    countAdult++;
                 updateNumPassenger();
                 break;
 
@@ -396,7 +397,8 @@ public class HomeActivity extends AppCompatActivity
                 break;
 
             case R.id.btUpChild:
-                countChild++;
+                if (canCountUp() && countChild < 4)
+                    countChild++;
                 updateNumPassenger();
                 break;
 
@@ -407,7 +409,8 @@ public class HomeActivity extends AppCompatActivity
                 break;
 
             case R.id.btUpIndent:
-                countIndent++;
+                if (canCountUp() && countIndent < 4)
+                    countIndent++;
                 updateNumPassenger();
                 break;
 
@@ -418,6 +421,13 @@ public class HomeActivity extends AppCompatActivity
                 updateTicketType();
                 break;
         }
+    }
+
+    private boolean canCountUp() {
+
+        if (countAdult + countChild + countIndent < 9)
+            return true;
+        return false;
     }
 
     @Override

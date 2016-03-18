@@ -1,6 +1,8 @@
 package com.ebksoft.flightbooking;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ import java.util.HashMap;
 public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListener {
 
     private TextView tvDeadlineToPay, tvBriefTicket;
+    private View contentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,8 @@ public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListe
         tvBriefTicket = (TextView) findViewById(R.id.tvBriefTicket);
 
         findViewById(R.id.btKeepBooking).setOnClickListener(this);
+
+        contentView = findViewById(R.id.contentView);
     }
 
     @Override
@@ -101,12 +106,29 @@ public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListe
                         CommonUtils.showToast(mContext, result.message);
                     }
 
+                    contentView.setVisibility(View.VISIBLE);
+
                 } else {
                     CommonUtils.showToast(mContext, getString(R.string.connection_timeout));
                 }
 
             }
         });
+    }
+
+    private void copyToClipboard() {
+        String CopyText = tvBriefTicket.getText().toString();
+        if (CopyText.length() != 0) {
+            if (Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+                android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                clipboard.setText(CopyText);
+
+            } else {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Clip", CopyText);
+                clipboard.setPrimaryClip(clip);
+            }
+        }
     }
 
     @Override

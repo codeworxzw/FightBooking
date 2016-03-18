@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -282,7 +283,14 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
             * Birthday: để mặc định, server tự xử lý
             * */
 
-            long bt = System.currentTimeMillis();
+//            long bt = System.currentTimeMillis();
+//            bt = bt - (20 * 365 * 86400 * 1000);
+
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.YEAR, c.get(Calendar.YEAR) - 20);//20 tuoi
+
+            long bt = c.getTimeInMillis();
+
             String birthDay = "/Date(" + bt + ")/";
             passenger.Birthday = birthDay;
 

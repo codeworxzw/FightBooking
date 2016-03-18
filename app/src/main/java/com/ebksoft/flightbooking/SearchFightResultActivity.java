@@ -3,6 +3,7 @@ package com.ebksoft.flightbooking;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -270,6 +271,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
 
         if (listView.getHeaderViewsCount() == 0)
             listView.addHeaderView(headerView);
+
 
         headerView.setVisibility(View.GONE);
         listView.setAdapter(adapter);

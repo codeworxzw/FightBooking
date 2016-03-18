@@ -10,6 +10,8 @@
         layout="@layout/layout_actionbar_normal" />
 
     <RelativeLayout
+        android:visibility="invisible"
+        android:id="@+id/contentView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/actionbar"
@@ -32,7 +34,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/textDeadlinePay"
-            android:text="19:01 09/02/2016"
             android:textColor="#e90a02" />
 
         <TextView
@@ -52,7 +53,6 @@
             android:layout_below="@+id/textBriefTicket"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:text="These code examples were ranked by Codota’s semantic indexing as the best open source examples for Android\nThese code examples were ranked by Codota’s semantic indexing as the best open source examples for Android"
             android:textColor="#e90a02" />
 
     </RelativeLayout>
