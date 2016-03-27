@@ -30,4 +30,5 @@ dependencies {
     compile 'com.squareup:android-times-square:1.6.4@aar'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.squareup.picasso:picasso:2.5.2'
+//    compile 'com.facebook.android:facebook-android-sdk:4.0.1'
 }

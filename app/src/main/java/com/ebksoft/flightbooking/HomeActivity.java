@@ -158,6 +158,7 @@ public class HomeActivity extends AppCompatActivity
 
         //Click on menu
         findViewById(R.id.imvHotlineBooking).setOnClickListener(this);
+        findViewById(R.id.imvLike).setOnClickListener(this);
     }
 
     private void loadData() {
@@ -431,6 +432,11 @@ public class HomeActivity extends AppCompatActivity
 
             case R.id.imvHotlineBooking:
                 startActivity(new Intent(this, HotlineBookingActivity.class));
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.imvLike:
+                startActivity(new Intent(this, GetPromotionActivity.class));
                 drawer.closeDrawer(GravityCompat.START);
                 break;
         }

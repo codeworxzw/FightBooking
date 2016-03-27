@@ -8,6 +8,8 @@
 
     <string name="connection_timeout">Không tìm thấy máy chủ. Vui lòng thử lại sau</string>
 
+    <string name="facebook_app_id">480629078811764</string>
+
     <!--Fight Booking String-->
     <string name="search_fight">Tìm chuyến bay</string>
     <string name="one_way">Một chiều</string>
@@ -88,6 +90,11 @@
 
     <!--Hotline booking-->
     <string name="title_hotline_booking">Hotline đặt vé</string>
+
+    <!--Get Promotion-->
+    <string name="title_get_promotion">Khuyến mãi</string>
+    <string name="title_like_desc">Hãy ấn \"like\" và \"+1\" để nhận khuyến mãi</string>
+
 
     <!--Other-->
     <string name="please_choose_go_ticket">Vui lòng chọn vé lượt đi</string>

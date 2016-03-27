@@ -1,10 +1,19 @@
 package com.ebksoft.flightbooking.utils;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.pm.Signature;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,6 +21,10 @@ import com.ebksoft.flightbooking.R;
 
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -134,5 +147,50 @@ public class CommonUtils {
         }
 
         return true;
+    }
+
+    public static void showKeyHask(Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(
+                    context.getApplicationContext().getPackageName(),
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }
+    }
+
+    public static Intent getOpenFacebookIntent(Context context) {
+
+        try {
+            context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
+            return new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/1624536567799989"));
+        } catch (Exception e) {
+            return new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/thietkewebvemaybayebksoft"));
+        }
+    }
+
+    public static Intent getOpenGooglePlusIntent(Context context) {
+        try {
+
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://plus.google.com/107403167130705087012/posts"));
+            intent.setPackage("com.google.android.apps.plus");// App has been installed
+
+            if (intent.resolveActivity(context.getPackageManager()) != null)//(fix disable)
+                return intent;
+
+
+        } catch (Exception ex) {
+            Log.e("", ex.getMessage());
+        }
+
+        return new Intent(Intent.ACTION_VIEW, Uri.parse("https://plus.google.com/107403167130705087012/posts"));
+
     }
 }

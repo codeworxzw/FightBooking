@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.ebksoft.flightbooking.utils.CommonUtils;
+
 /**
  * Created by chauminhnhut on 1/5/16.
  */
@@ -43,6 +45,7 @@ public class SplashScreenActivity extends BaseActivity {
     @Override
     protected void loadData() {
 
+        CommonUtils.showKeyHask(this);
     }
 
     @Override
