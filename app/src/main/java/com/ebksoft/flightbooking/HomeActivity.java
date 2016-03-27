@@ -59,6 +59,8 @@ public class HomeActivity extends AppCompatActivity
     private TextView tvDateGo, tvMonthYearGo, tvDayGo;
     private TextView tvDateTo, tvMonthYearTo, tvDayTo;
 
+    private DrawerLayout drawer;
+
     /*
     Hình ảnh thể hiện nếu là 2 chiều
      */
@@ -95,6 +97,8 @@ public class HomeActivity extends AppCompatActivity
 
     private void loadView() {
         initNav();
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         findViewById(R.id.imgMenu).setOnClickListener(this);
@@ -151,6 +155,9 @@ public class HomeActivity extends AppCompatActivity
         tvDayTo = (TextView) findViewById(R.id.tvDayTo);
 
         imgFightBack = (ImageView) findViewById(R.id.imgFightBack);
+
+        //Click on menu
+        findViewById(R.id.imvHotlineBooking).setOnClickListener(this);
     }
 
     private void loadData() {
@@ -316,7 +323,6 @@ public class HomeActivity extends AppCompatActivity
         Intent i = null;
         switch (view.getId()) {
             case R.id.imgMenu:
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
                 } else {
@@ -419,6 +425,13 @@ public class HomeActivity extends AppCompatActivity
 
                 isNormalType = !isNormalType;
                 updateTicketType();
+                break;
+
+            //Click on menu
+
+            case R.id.imvHotlineBooking:
+                startActivity(new Intent(this, HotlineBookingActivity.class));
+                drawer.closeDrawer(GravityCompat.START);
                 break;
         }
     }
@@ -571,7 +584,6 @@ public class HomeActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
