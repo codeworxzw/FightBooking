@@ -1,6 +1,7 @@
 package com.ebksoft.flightbooking;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -101,7 +102,11 @@ public class HomeActivity extends AppCompatActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
-        findViewById(R.id.imgMenu).setOnClickListener(this);
+
+        Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
+        Button button = (Button)findViewById( R.id.imgMenu );
+        button.setTypeface(font);
+        button.setOnClickListener(this);
 
         findViewById(R.id.rlPlaceFrom).setOnClickListener(this);
         findViewById(R.id.rlPlaceTo).setOnClickListener(this);
@@ -159,6 +164,7 @@ public class HomeActivity extends AppCompatActivity
         //Click on menu
         findViewById(R.id.imvHotlineBooking).setOnClickListener(this);
         findViewById(R.id.imvLike).setOnClickListener(this);
+        findViewById(R.id.imvManageTicket).setOnClickListener(this);
     }
 
     private void loadData() {
@@ -437,6 +443,11 @@ public class HomeActivity extends AppCompatActivity
 
             case R.id.imvLike:
                 startActivity(new Intent(this, GetPromotionActivity.class));
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.imvManageTicket:
+                startActivity(new Intent(this, ManageBookingTicket.class));
                 drawer.closeDrawer(GravityCompat.START);
                 break;
         }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.ebksoft.flightbooking.HomeActivity"
@@ -14,25 +15,53 @@
         android:id="@+id/actionbar"
         layout="@layout/layout_actionbar_home_activity" />
 
-    <include
-        android:id="@+id/header"
-        layout="@layout/layout_home_header" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/place"
-        layout="@layout/layout_home_place" />
+        <include
+            android:id="@+id/header"
+            layout="@layout/layout_home_header" />
 
-    <include
-        android:id="@+id/time"
-        layout="@layout/layout_home_time" />
+    </FrameLayout>
 
-    <include
-        android:id="@+id/passenger"
-        layout="@layout/layout_home_passenger" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff">
+
+        <include
+            android:id="@+id/place"
+            layout="@layout/layout_home_place" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff">
+
+        <include
+            android:id="@+id/time"
+            layout="@layout/layout_home_time" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff">
+
+        <include
+            android:id="@+id/passenger"
+            layout="@layout/layout_home_passenger" />
+
+    </FrameLayout>
+
 
     <!--<include-->
-        <!--android:id="@+id/cabin"-->
-        <!--layout="@layout/layout_home_cabin" />-->
+    <!--android:id="@+id/cabin"-->
+    <!--layout="@layout/layout_home_cabin" />-->
 
     <RelativeLayout
         android:layout_width="match_parent"
