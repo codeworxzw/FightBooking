@@ -101,7 +101,7 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void loadData() {
 
-        application = AppApplication.getInstance();
+        application = AppApplication.getInstance(this);
 
         countAdult = application.countAdult;
         countChild = application.countChild;

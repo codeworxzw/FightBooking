@@ -99,6 +99,12 @@
     <!-- Manage Booking Ticket-->
     <string name="title_manage_booking_ticket">Quản lý vé</string>
 
+    <!-- List news-->
+    <string name="title_list_news">Tin tức</string>
+
+    <!-- About us-->
+    <string name="title_about_us">About us</string>
+
     <!--Other-->
     <string name="please_choose_go_ticket">Vui lòng chọn vé lượt đi</string>
     <string name="please_choose_back_ticket">Vui lòng chọn vé lượt về</string>

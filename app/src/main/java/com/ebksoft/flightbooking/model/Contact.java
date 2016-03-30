@@ -5,7 +5,10 @@ package com.ebksoft.flightbooking.model;
  */
 public class Contact {
 
-    public String title;
-    public String phone;
-    public String name;
+    public String Image;
+    public String Title;
+    public String Phone;
+    public String Name;
+
+
 }

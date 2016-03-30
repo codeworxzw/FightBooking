@@ -146,6 +146,6 @@ public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListe
     private void doneProgress() {
         startActivity(new Intent(this, HomeActivity.class));
 
-        AppApplication.getInstance().resetData();
+        AppApplication.getInstance(this).resetData();
     }
 }

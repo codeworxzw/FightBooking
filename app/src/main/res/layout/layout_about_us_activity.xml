@@ -9,20 +9,11 @@
         android:id="@+id/actionbar"
         layout="@layout/layout_actionbar_normal" />
 
-    <RelativeLayout
+    <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/actionbar">
-
-        <ListView
-            android:id="@+id/listView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none">
-
-        </ListView>
-        
-    </RelativeLayout>
+        android:layout_below="@+id/actionbar" />
 
 
 </RelativeLayout>

@@ -254,7 +254,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
         FirmIDs = new ArrayList<>();
         FirmImages = new ArrayList<>();
 
-        application = AppApplication.getInstance();
+        application = AppApplication.getInstance(this);
 
         countAdult = application.countAdult;
         countChild = application.countChild;
@@ -1268,7 +1268,7 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
     private void searchFight() {
 
         HashMap<String, Object> params = new HashMap<String, Object>();
-        AppApplication app = AppApplication.getInstance();
+        AppApplication app = AppApplication.getInstance(this);
         params.put("session_key", session_key);
 
         try {

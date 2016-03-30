@@ -6,7 +6,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.ebksoft.flightbooking.model.ResponseObj.DetailNewsResObj;
+import com.ebksoft.flightbooking.model.ResponseObj.GetSocialResObj;
+import com.ebksoft.flightbooking.model.SocialModel;
+import com.ebksoft.flightbooking.network.AppRequest;
 import com.ebksoft.flightbooking.utils.CommonUtils;
+import com.ebksoft.flightbooking.utils.ConfigAPI;
+import com.ebksoft.flightbooking.utils.DataRequestCallback;
+
+import java.util.HashMap;
 
 //import com.facebook.share.widget.LikeView;
 
@@ -15,7 +23,9 @@ import com.ebksoft.flightbooking.utils.CommonUtils;
  */
 public class GetPromotionActivity extends BaseActivity implements View.OnClickListener {
 
-//    private LikeView likeView;
+    //    private LikeView likeView;
+    private SocialModel fbModel, gooMoDel;
+    private View viewContainner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +53,66 @@ public class GetPromotionActivity extends BaseActivity implements View.OnClickLi
 
         findViewById(R.id.rlFb).setOnClickListener(this);
         findViewById(R.id.rlGooglePlus).setOnClickListener(this);
+
+        viewContainner = findViewById(R.id.viewContainner);
     }
 
     @Override
     protected void loadData() {
 
+        getSocial();
+
+    }
+
+    private void getSocial() {
+
+        CommonUtils.showProgressDialog(this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("authen_key", ConfigAPI.AUTHEN_KEY);
+
+        AppRequest.getSocial(this, params, true, new DataRequestCallback<GetSocialResObj>() {
+            @Override
+            public void onResult(GetSocialResObj result, boolean continueWaiting) {
+                CommonUtils.closeProgressDialog();
+
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
+
+                        for (int i = 0; i < result.data.size(); i++) {
+                            if (result.data.get(i).Type == 1) {
+                                fbModel = result.data.get(i);
+                            } else {
+                                gooMoDel = result.data.get(i);
+                            }
+                        }
+
+                        viewContainner.setVisibility(View.VISIBLE);
+
+                    } else {
+                        CommonUtils.showToast(mContext, result.message);
+                    }
+
+                } else {
+                    CommonUtils.showToast(mContext, getString(R.string.connection_timeout));
+                }
+
+            }
+        });
     }
 
     @Override
     public void onClick(View view) {
 
         if (R.id.rlFb == view.getId()) {
-            startActivity(CommonUtils.getOpenFacebookIntent(this));
+            if (fbModel != null)
+                startActivity(CommonUtils.getOpenFacebookIntent(this, fbModel));
         }
 
         if (R.id.rlGooglePlus == view.getId()) {
-            startActivity(CommonUtils.getOpenGooglePlusIntent(this));
+            if (gooMoDel != null)
+                startActivity(CommonUtils.getOpenGooglePlusIntent(this, gooMoDel));
         }
     }
 

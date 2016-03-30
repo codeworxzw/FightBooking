@@ -1,6 +1,13 @@
 package com.ebksoft.flightbooking.utils;
 
 import android.app.Application;
+import android.content.Context;
+import android.util.Log;
+
+import com.ebksoft.flightbooking.model.HistorySearchTrip;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by chauminhnhut on 10/24/15.
@@ -9,25 +16,22 @@ public class AppApplication extends Application {
 
     static AppApplication instance;
 
-    public static AppApplication getInstance(){
-        if (null==instance)
-            instance = new AppApplication();
-        return  instance;
+    public static AppApplication getInstance(Context context) {
+        if (null == instance)
+            instance = (AppApplication)context.getApplicationContext();
+        return instance;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        /*Init FB SDK*/
-//        FBUtils.init(this);
     }
 
     /*
     * Các giá trị cần lưu tạm để sử dụng
     * */
 
-    public boolean isInternetConnection = false;
+    public List<HistorySearchTrip> historySearchTrips;
 
     public String FromCityCode = "";
     public String ToCityCode = "";
@@ -40,7 +44,8 @@ public class AppApplication extends Application {
 
     public boolean isOneWay = true;
 
-    public void resetData(){
+    public void resetData() {
+
         FromCityCode = "";
         ToCityCode = "";
 

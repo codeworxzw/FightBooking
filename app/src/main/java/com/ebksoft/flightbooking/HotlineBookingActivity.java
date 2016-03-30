@@ -22,10 +22,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ebksoft.flightbooking.model.Contact;
+import com.ebksoft.flightbooking.model.ResponseObj.GetAboutUsResObj;
+import com.ebksoft.flightbooking.model.ResponseObj.GetHotlinesResObj;
+import com.ebksoft.flightbooking.network.AppRequest;
 import com.ebksoft.flightbooking.utils.CommonUtils;
+import com.ebksoft.flightbooking.utils.ConfigAPI;
+import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.ImageUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -35,6 +41,7 @@ public class HotlineBookingActivity extends BaseActivity implements AdapterView.
 
     private List<Contact> contactList;
     private ListView listView;
+    private CustomAdapter adapter;
 
     private static final int PERMISSION_REQUEST_CALL_PHONE = 0;
 
@@ -64,20 +71,54 @@ public class HotlineBookingActivity extends BaseActivity implements AdapterView.
     @Override
     protected void loadData() {
 
-        initContactList();
-
-        CustomAdapter adapter = new CustomAdapter(this, contactList);
+        contactList = new ArrayList<>();
+        adapter = new CustomAdapter(this, contactList);
         listView.setAdapter(adapter);
 
+        getHotlines();
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
         Contact contact = (Contact) adapterView.getItemAtPosition(i);
-        selectedPhone = contact.phone.replace(".", "");
+        selectedPhone = contact.Phone.replace(".", "");
 
         openCallphoneWithAskPermission();
+    }
+
+    private void getHotlines() {
+
+        CommonUtils.showProgressDialog(this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("authen_key", ConfigAPI.AUTHEN_KEY);
+
+        AppRequest.getHotlines(this, params, true, new DataRequestCallback<GetHotlinesResObj>() {
+            @Override
+            public void onResult(GetHotlinesResObj result, boolean continueWaiting) {
+                CommonUtils.closeProgressDialog();
+
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
+
+                        for (int i=0;i<result.data.size();i++){
+                            contactList.add(result.data.get(i));
+                        }
+
+                        adapter.notifyDataSetChanged();
+
+                    } else {
+                        CommonUtils.showToast(mContext, result.message);
+                    }
+
+                } else {
+                    CommonUtils.showToast(mContext, getString(R.string.connection_timeout));
+                }
+
+            }
+        });
     }
 
     private void openCallphoneWithAskPermission() {
@@ -156,35 +197,6 @@ public class HotlineBookingActivity extends BaseActivity implements AdapterView.
                 .setNegativeButton("Không", dialogClickListener).show();
     }
 
-    private void initContactList() {
-        contactList = new ArrayList<>();
-
-        Contact p1 = new Contact();
-        p1.title = "Hotline 1";
-        p1.phone = "0169.7515.825";
-        p1.name = "gặp Nhựt";
-
-        Contact p2 = new Contact();
-        p2.title = "Hotline 2";
-        p2.phone = "0915.38.55.57";
-        p2.name = "gặp Hiền";
-
-        Contact p3 = new Contact();
-        p3.title = "Hotline 3";
-        p3.phone = "0915.38.55.58";
-        p3.name = "gặp Lợi";
-
-        Contact p4 = new Contact();
-        p4.title = "Hotline 4";
-        p4.phone = "0915.38.55.59";
-        p4.name = "gặp Hương";
-
-        contactList.add(p1);
-        contactList.add(p2);
-        contactList.add(p3);
-        contactList.add(p4);
-    }
-
     public class CustomAdapter extends BaseAdapter {
 
         private List<Contact> contactList;
@@ -213,6 +225,7 @@ public class HotlineBookingActivity extends BaseActivity implements AdapterView.
                 viewHolder = new ViewHolder();
                 viewHolder.title = (TextView) view.findViewById(R.id.title);
                 viewHolder.name = (TextView) view.findViewById(R.id.name);
+                viewHolder.imageView = (ImageView)view.findViewById(R.id.imageView);
 
                 view.setTag(viewHolder);
             } else {
@@ -221,8 +234,10 @@ public class HotlineBookingActivity extends BaseActivity implements AdapterView.
 
             Contact c = contactList.get(i);
 
-            viewHolder.title.setText(c.title + ":");
-            viewHolder.name.setText(c.phone + " - " + c.name);
+            viewHolder.title.setText(c.Title + ":");
+            viewHolder.name.setText(c.Phone + " - " + c.Name);
+
+            ImageUtils.load2(context, viewHolder.imageView, c.Image);
 
             return view;
         }
@@ -241,6 +256,7 @@ public class HotlineBookingActivity extends BaseActivity implements AdapterView.
     public class ViewHolder {
         public TextView title;
         public TextView name;
+        public ImageView imageView;
     }
 
 }

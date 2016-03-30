@@ -18,6 +18,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.ebksoft.flightbooking.R;
+import com.ebksoft.flightbooking.model.HistorySearchTrip;
+import com.ebksoft.flightbooking.model.ResponseObj.GetSocialResObj;
+import com.ebksoft.flightbooking.model.SocialModel;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -166,31 +170,71 @@ public class CommonUtils {
         }
     }
 
-    public static Intent getOpenFacebookIntent(Context context) {
+    public static Intent getOpenFacebookIntent(Context context, SocialModel model) {
 
         try {
             context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
-            return new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/1624536567799989"));
+            String s = String.format("fb://page/%s", model.ID);
+            return new Intent(Intent.ACTION_VIEW, Uri.parse(s));
         } catch (Exception e) {
-            return new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/thietkewebvemaybayebksoft"));
+            return new Intent(Intent.ACTION_VIEW, Uri.parse(model.Link));
         }
     }
 
-    public static Intent getOpenGooglePlusIntent(Context context) {
+    public static Intent getOpenGooglePlusIntent(Context context,  SocialModel model) {
         try {
 
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://plus.google.com/107403167130705087012/posts"));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(model.Link));
             intent.setPackage("com.google.android.apps.plus");// App has been installed
 
             if (intent.resolveActivity(context.getPackageManager()) != null)//(fix disable)
                 return intent;
 
-
         } catch (Exception ex) {
             Log.e("", ex.getMessage());
         }
 
-        return new Intent(Intent.ACTION_VIEW, Uri.parse("https://plus.google.com/107403167130705087012/posts"));
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(model.Link));
 
     }
+
+    public static void addHistorySearchTrip(Context context, HistorySearchTrip trip){
+
+        AppApplication appApplication = AppApplication.getInstance(context);
+
+        if(appApplication.historySearchTrips!=null){
+            if(appApplication.historySearchTrips.size()>=10){
+                appApplication.historySearchTrips.remove(0);
+            }
+            appApplication.historySearchTrips.add(trip);
+        }
+
+        /*
+        * Save async to Share Pref
+        * */
+        CommonUtils.saveSharePref(context);
+    }
+
+    public static void saveSharePref(final Context context){
+
+        final ThreadManager t = ThreadManager.getInstance();
+
+        int priority = ThreadManager.PRIORITY_NORMAL;
+
+        t.execute(new Runnable() {
+
+            @Override
+            public void run() {
+
+                AppApplication appApplication = AppApplication.getInstance(context);
+
+                if(appApplication.historySearchTrips!=null){
+                    String s = new Gson().toJson(appApplication.historySearchTrips);
+                    SharedpreferencesUtils.getInstance(context).save("history", s);
+                }
+
+            }
+        }, priority);
+    }
+
 }

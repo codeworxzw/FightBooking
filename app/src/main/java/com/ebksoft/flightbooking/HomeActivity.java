@@ -20,11 +20,14 @@ import android.widget.TextView;
 
 import com.ebksoft.flightbooking.model.ResponseObj.InitResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.SearchResObj;
+import com.ebksoft.flightbooking.model.HistorySearchTrip;
 import com.ebksoft.flightbooking.network.AppRequest;
 import com.ebksoft.flightbooking.utils.AppApplication;
 import com.ebksoft.flightbooking.utils.CommonUtils;
+import com.ebksoft.flightbooking.utils.ConfigAPI;
 import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
@@ -103,8 +106,8 @@ public class HomeActivity extends AppCompatActivity
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
 
-        Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
-        Button button = (Button)findViewById( R.id.imgMenu );
+        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
+        Button button = (Button) findViewById(R.id.imgMenu);
         button.setTypeface(font);
         button.setOnClickListener(this);
 
@@ -165,6 +168,9 @@ public class HomeActivity extends AppCompatActivity
         findViewById(R.id.imvHotlineBooking).setOnClickListener(this);
         findViewById(R.id.imvLike).setOnClickListener(this);
         findViewById(R.id.imvManageTicket).setOnClickListener(this);
+        findViewById(R.id.imvBooking).setOnClickListener(this);
+        findViewById(R.id.imvNews).setOnClickListener(this);
+        findViewById(R.id.imvAboutUs).setOnClickListener(this);
     }
 
     private void loadData() {
@@ -230,7 +236,7 @@ public class HomeActivity extends AppCompatActivity
         CommonUtils.showProgressDialog(this);
         HashMap<String, Object> params = new HashMap<String, Object>();
 
-        params.put("authen_key", "canhdieuvietnet");
+        params.put("authen_key", ConfigAPI.AUTHEN_KEY);
         params.put("ip_address", CommonUtils.getIPAddress(this));
 
         AppRequest.reqInitAPI(this, params, true, new DataRequestCallback<InitResObj>() {
@@ -284,7 +290,7 @@ public class HomeActivity extends AppCompatActivity
             Log.e("", "SeerchFight Error");
         }
 
-        app = AppApplication.getInstance();
+        app = AppApplication.getInstance(this);
         app.countAdult = countAdult;
         app.countChild = countChild;
         app.countIndent = countIndent;
@@ -298,6 +304,13 @@ public class HomeActivity extends AppCompatActivity
                 CommonUtils.closeProgressDialog();
                 if (null != result) {
                     if (result.status.equals("0")) {
+
+                        //Cache this search for history
+
+                        addSearchTrip();
+
+                        //End
+
                         Intent intent = new Intent(HomeActivity.this, SearchFightResultActivity.class);
                         intent.putExtra("place_from", tvPlaceFromName.getText().toString());
                         intent.putExtra("place_to", tvPlaceToName.getText().toString());
@@ -310,6 +323,7 @@ public class HomeActivity extends AppCompatActivity
                         app.isOneWay = isOneWay;
 
                         startActivity(intent);
+
                     } else {
                         CommonUtils.showToast(HomeActivity.this, result.message);
                     }
@@ -322,6 +336,72 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    private void addSearchTrip() {
+
+        HistorySearchTrip searchTrip = new HistorySearchTrip();
+
+        String s = String.format("%s (%s)", tvPlaceFromName.getText().toString(), FromCityCode);
+        searchTrip.From = s;
+
+        s = String.format("%s (%s)", tvPlaceToName.getText().toString(), ToCityCode);
+        searchTrip.To = s;
+
+        if (isOneWay) {
+            s = "1 chiều\n";
+        } else {
+            s = "2 chiều\n";
+        }
+
+        s += String.format("%s - %s, %s %s",
+                tvPlaceFromName.getText().toString(),
+                tvDayGo.getText().toString(),
+                tvDateGo.getText().toString(),
+                tvMonthYearGo.getText().toString());
+
+        if (!isOneWay) {
+            s += "\n";
+            s += String.format("%s - %s, %s %s",
+                    tvPlaceToName.getText().toString(),
+                    tvDayTo.getText().toString(),
+                    tvDateTo.getText().toString(),
+                    tvMonthYearTo.getText().toString());
+        }
+
+        searchTrip.WayTime = s;
+
+        s = String.format("%d Người lớn", countAdult);
+
+        if (countChild != 0) {
+            s += String.format(", %d Trẻ em", countChild);
+        }
+
+        if (countIndent != 0) {
+            s += String.format(", %d Sơ sinh", countIndent);
+        }
+
+        searchTrip.Passenger = s;
+
+        searchTrip.FromCityCode = FromCityCode;
+        searchTrip.FromCityName = tvPlaceFromName.getText().toString();
+
+        searchTrip.ToCityCode = ToCityCode;
+        searchTrip.ToCityName = tvPlaceToName.getText().toString();
+
+        searchTrip.calendarGo = Calendar.getInstance();
+        searchTrip.calendarGo.setTimeInMillis(ltimeGo);
+
+        searchTrip.calendarBack = Calendar.getInstance();
+        searchTrip.calendarBack.setTimeInMillis(lTimeBack);
+
+        searchTrip.countAdult = countAdult;
+        searchTrip.countChild = countChild;
+        searchTrip.countIdent = countIndent;
+
+        searchTrip.isOneWay = isOneWay;
+
+        CommonUtils.addHistorySearchTrip(this, searchTrip);
     }
 
     @Override
@@ -450,6 +530,20 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(new Intent(this, ManageBookingTicket.class));
                 drawer.closeDrawer(GravityCompat.START);
                 break;
+
+            case R.id.imvBooking:
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.imvNews:
+                startActivity(new Intent(this, ListNewsActivity.class));
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+
+            case R.id.imvAboutUs:
+                startActivity(new Intent(this, AboutUsActivity.class));
+                drawer.closeDrawer(GravityCompat.START);
+                break;
         }
     }
 
@@ -530,7 +624,70 @@ public class HomeActivity extends AppCompatActivity
         super.onResume();
 
         //Khi quay về màn hình này, cần reset tất cả dữ liệu lưu trữ trước đó
-        AppApplication.getInstance().resetData();
+        AppApplication.getInstance(this).resetData();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        loadHistoryTrip(intent);
+    }
+
+    private void loadHistoryTrip(Intent intent) {
+
+        if (intent != null) {
+            int index = intent.getExtras().getInt("index");
+            HistorySearchTrip historySearchTrip = AppApplication.getInstance(this).historySearchTrips.get(index);
+
+            if (null != historySearchTrip) {
+
+
+                //Place From
+                FromCityCode = historySearchTrip.FromCityCode;
+                String nameFrom = historySearchTrip.FromCityName;
+
+                tvPlaceFromCode.setText(FromCityCode);
+                tvPlaceFromName.setText(nameFrom);
+
+                //Place To
+                ToCityCode = historySearchTrip.ToCityCode;
+                String nameTo = historySearchTrip.ToCityName;
+
+                tvPlaceToCode.setText(ToCityCode);
+                tvPlaceToName.setText(nameTo);
+
+
+                isOneWay = historySearchTrip.isOneWay;
+
+                loadGoTime(historySearchTrip.calendarGo);
+
+                if(!historySearchTrip.isOneWay){
+
+                    rlTimeToParent.setVisibility(View.VISIBLE);
+                    imgFightBack.setVisibility(View.VISIBLE);
+
+                    btOneWay.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                    btRoundTrip.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+
+                    loadGoBackTime(historySearchTrip.calendarBack);
+                }else{
+
+                    rlTimeToParent.setVisibility(View.INVISIBLE);
+                    imgFightBack.setVisibility(View.GONE);
+
+                    btOneWay.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+                    btRoundTrip.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+
+                }
+
+                countAdult = historySearchTrip.countAdult;
+                countIndent = historySearchTrip.countIdent;
+                countChild = historySearchTrip.countChild;
+                updateNumPassenger();
+
+            }
+        }
     }
 
     private void initNav() {
