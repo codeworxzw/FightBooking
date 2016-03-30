@@ -3,7 +3,6 @@ package com.ebksoft.flightbooking;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import com.ebksoft.flightbooking.model.HistorySearchTrip;
 import com.ebksoft.flightbooking.utils.AppApplication;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

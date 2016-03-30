@@ -3,9 +3,7 @@ package com.ebksoft.flightbooking;
 import android.os.Bundle;
 import android.webkit.WebView;
 
-import com.ebksoft.flightbooking.model.ResponseObj.DetailNewsResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.GetAboutUsResObj;
-import com.ebksoft.flightbooking.model.ResponseObj.SVResponseObj;
 import com.ebksoft.flightbooking.network.AppRequest;
 import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.ConfigAPI;

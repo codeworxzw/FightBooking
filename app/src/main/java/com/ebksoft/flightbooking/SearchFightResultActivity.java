@@ -3,7 +3,6 @@ package com.ebksoft.flightbooking;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -39,7 +38,6 @@ import com.ebksoft.flightbooking.utils.ImageUtils;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;

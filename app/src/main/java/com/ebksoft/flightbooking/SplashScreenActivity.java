@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 
 import com.ebksoft.flightbooking.model.HistorySearchTrip;
 import com.ebksoft.flightbooking.utils.AppApplication;
-import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

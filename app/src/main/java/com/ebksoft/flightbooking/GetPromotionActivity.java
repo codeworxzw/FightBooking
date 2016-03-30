@@ -1,12 +1,10 @@
 package com.ebksoft.flightbooking;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.ebksoft.flightbooking.model.ResponseObj.DetailNewsResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.GetSocialResObj;
 import com.ebksoft.flightbooking.model.SocialModel;
 import com.ebksoft.flightbooking.network.AppRequest;

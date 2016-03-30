@@ -10,7 +10,6 @@ import com.squareup.timessquare.CalendarPickerView;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by chauminhnhut on 1/10/16.

@@ -15,16 +15,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ebksoft.flightbooking.model.News;
-import com.ebksoft.flightbooking.model.ResponseObj.BookingResultResObj;
-import com.ebksoft.flightbooking.model.ResponseObj.GetTicketResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.ListNewsResObj;
-import com.ebksoft.flightbooking.model.TicketInfo;
 import com.ebksoft.flightbooking.network.AppRequest;
 import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.ConfigAPI;
 import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.ImageUtils;
-import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

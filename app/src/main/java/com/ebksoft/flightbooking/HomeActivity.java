@@ -18,16 +18,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ebksoft.flightbooking.model.HistorySearchTrip;
 import com.ebksoft.flightbooking.model.ResponseObj.InitResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.SearchResObj;
-import com.ebksoft.flightbooking.model.HistorySearchTrip;
 import com.ebksoft.flightbooking.network.AppRequest;
 import com.ebksoft.flightbooking.utils.AppApplication;
 import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.ConfigAPI;
 import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
-import com.google.gson.Gson;
 
 import org.json.JSONObject;
 

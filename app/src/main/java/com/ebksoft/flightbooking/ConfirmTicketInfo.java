@@ -8,17 +8,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ebksoft.flightbooking.model.BagModel;
 import com.ebksoft.flightbooking.model.BookingResultModel;
 import com.ebksoft.flightbooking.model.ResponseObj.BookingResultResObj;
-import com.ebksoft.flightbooking.model.ResponseObj.GetBagResObj;
-import com.ebksoft.flightbooking.model.ResponseObj.SVResponseObj;
 import com.ebksoft.flightbooking.network.AppRequest;
 import com.ebksoft.flightbooking.utils.AppApplication;
 import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
-import com.ebksoft.flightbooking.utils.ToastUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
