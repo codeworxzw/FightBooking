@@ -10,6 +10,11 @@
 
     <color name="graylight">#ebedec</color>
 
+    <color name="red">#f00</color>
+    <color name="green">#0f0</color>
+    <color name="blue">#00f</color>
+    <color name="yellow">#ff0</color>
+
     <!--Color for TimeSquare Lib-->
     <color name="custom_header_text">#85B100</color>
     <color name="custom_selected">@color/colorPrimary</color>

@@ -9,11 +9,21 @@
         android:id="@+id/actionbar"
         layout="@layout/layout_actionbar_normal" />
 
-    <ListView
-        android:id="@+id/listView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/actionbar" />
+        android:layout_below="@+id/actionbar">
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+        </ListView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </RelativeLayout>

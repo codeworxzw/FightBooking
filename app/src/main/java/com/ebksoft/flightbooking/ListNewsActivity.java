@@ -3,9 +3,11 @@ package com.ebksoft.flightbooking;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -31,11 +33,21 @@ import java.util.List;
 /**
  * Created by chauminhnhut on 3/28/16.
  */
-public class ListNewsActivity extends BaseActivity implements AdapterView.OnItemClickListener{
+public class ListNewsActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private ListView listView;
     private CustomAdapter adapter;
     private List<News> lstNews;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private int page = 0;
+
+    private int currentVisibleItemCount;
+    private int currentScrollState;
+    private int currentFirstVisibleItem;
+    private int totalItem;
+
+    private boolean isNeedLoadMore = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +68,46 @@ public class ListNewsActivity extends BaseActivity implements AdapterView.OnItem
         listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(this);
 
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                currentScrollState = scrollState;
+                isScrollCompleted();
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+
+                currentFirstVisibleItem = firstVisibleItem;
+                currentVisibleItemCount = visibleItemCount;
+                totalItem = totalItemCount;
+
+            }
+        });
+
+        swipeRefreshLayout = (SwipeRefreshLayout)
+                findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setColorSchemeResources(R.color.red, R.color.green,
+                R.color.blue, R.color.yellow);
+
+        swipeRefreshLayout
+                .setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        swipeRefreshLayout.setRefreshing(true);
+
+                        page = 0;
+                        getListNews();
+
+                    }
+                });
+
+
     }
 
     @Override
@@ -65,13 +117,23 @@ public class ListNewsActivity extends BaseActivity implements AdapterView.OnItem
         adapter = new CustomAdapter(this, lstNews);
         listView.setAdapter(adapter);
 
-        getListNews(1);
+        getListNews();
+    }
+
+    private void isScrollCompleted() {
+        if (totalItem - currentFirstVisibleItem == currentVisibleItemCount
+                && this.currentScrollState == 0) {
+            /** To do code here */
+
+            if (isNeedLoadMore)
+                getListNews();
+        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        News news = (News)adapter.getItem(i);
+        News news = (News) adapter.getItem(i);
 
         Intent intent = new Intent(this, DetailNewsActivity.class);
         intent.putExtra("ID", news.ID);
@@ -79,7 +141,8 @@ public class ListNewsActivity extends BaseActivity implements AdapterView.OnItem
         startActivity(intent);
     }
 
-    private void getListNews(int page) {
+    private void getListNews() {
+        page++;
 
         CommonUtils.showProgressDialog(this);
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -92,9 +155,17 @@ public class ListNewsActivity extends BaseActivity implements AdapterView.OnItem
             public void onResult(ListNewsResObj result, boolean continueWaiting) {
                 CommonUtils.closeProgressDialog();
 
-
                 if (null != result) {
                     if (result.status.equals("0")) {
+
+                        if (swipeRefreshLayout.isRefreshing()){
+                            swipeRefreshLayout.setRefreshing(false);
+                            lstNews.clear();
+                        }
+
+                        if (result.data.size() == 0) {
+                            isNeedLoadMore = false;
+                        }
 
                         for (int i = 0; i < result.data.size(); i++) {
                             lstNews.add(result.data.get(i));

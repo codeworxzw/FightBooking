@@ -3,6 +3,7 @@ package com.ebksoft.flightbooking;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,6 @@ public class ManageBookingTicket extends BaseActivity implements AdapterView.OnI
         initButtonBack();
 
         listView = (ListView)findViewById(R.id.listView);
-
     }
 
     @Override
