@@ -1,25 +1,22 @@
 package com.ebksoft.flightbooking.utils;
 
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.ebksoft.flightbooking.R;
 import com.ebksoft.flightbooking.model.HistorySearchTrip;
-import com.ebksoft.flightbooking.model.ResponseObj.GetSocialResObj;
 import com.ebksoft.flightbooking.model.SocialModel;
 import com.google.gson.Gson;
 
@@ -27,8 +24,6 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,6 +36,26 @@ public class CommonUtils {
     static boolean isToastShowing = false;
     //    static Handler handler = new Handler();
     static ProgressDialog progress;
+
+    /**
+     * Khởi tạo các thông tin mặc định
+     */
+    public static void init(Context context) {
+
+        AppApplication.getInstance(context).setInternetConnnection(
+                CommonUtils.checkInternetConnection(context
+                        .getApplicationContext()));
+
+//        DatabaseManager.initializeInstance(new DatabaseHelper(context
+//                .getApplicationContext()));
+//
+//        String regId = GCMRegistrar.getRegistrationId(context);
+//        if (null != regId && !regId.equals("")) {
+//            AppApplication.getInstance().setRegistrationId(regId);
+//        }
+
+    }
+
 
     public static JSONObject buildJson(Map<String, Object> params) {
         JSONObject json = new JSONObject();
@@ -69,6 +84,10 @@ public class CommonUtils {
 
     public static void showToast(Context c, String message) {
         Toast.makeText(c, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showToastNoInternetConnecton(Context c) {
+        showToast(c, c.getString(R.string.no_internet_connection));
     }
 
     public static ProgressDialog showProgressDialog(Context context) {
@@ -181,7 +200,7 @@ public class CommonUtils {
         }
     }
 
-    public static Intent getOpenGooglePlusIntent(Context context,  SocialModel model) {
+    public static Intent getOpenGooglePlusIntent(Context context, SocialModel model) {
         try {
 
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(model.Link));
@@ -198,12 +217,12 @@ public class CommonUtils {
 
     }
 
-    public static void addHistorySearchTrip(Context context, HistorySearchTrip trip){
+    public static void addHistorySearchTrip(Context context, HistorySearchTrip trip) {
 
         AppApplication appApplication = AppApplication.getInstance(context);
 
-        if(appApplication.historySearchTrips!=null){
-            if(appApplication.historySearchTrips.size()>=10){
+        if (appApplication.historySearchTrips != null) {
+            if (appApplication.historySearchTrips.size() >= 10) {
                 appApplication.historySearchTrips.remove(0);
             }
             appApplication.historySearchTrips.add(trip);
@@ -215,7 +234,7 @@ public class CommonUtils {
         CommonUtils.saveSharePref(context);
     }
 
-    public static void saveSharePref(final Context context){
+    public static void saveSharePref(final Context context) {
 
         final ThreadManager t = ThreadManager.getInstance();
 
@@ -228,13 +247,30 @@ public class CommonUtils {
 
                 AppApplication appApplication = AppApplication.getInstance(context);
 
-                if(appApplication.historySearchTrips!=null){
+                if (appApplication.historySearchTrips != null) {
                     String s = new Gson().toJson(appApplication.historySearchTrips);
                     SharedpreferencesUtils.getInstance(context).save("history", s);
                 }
 
             }
         }, priority);
+    }
+
+    /**
+     * Kiem tra ket noi mang
+     *
+     * @param context
+     * @return
+     */
+    public static boolean checkInternetConnection(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        //should check null because in air plan mode it will be null
+        return (netInfo != null && netInfo.isConnected());
+    }
+
+    public static boolean isNetWorkAvailable(Context context){
+        return AppApplication.getInstance(context).isInternetConnnection();
     }
 
 }

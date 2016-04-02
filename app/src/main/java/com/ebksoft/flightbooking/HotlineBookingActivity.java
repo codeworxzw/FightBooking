@@ -71,7 +71,10 @@ public class HotlineBookingActivity extends BaseActivity implements AdapterView.
         adapter = new CustomAdapter(this, contactList);
         listView.setAdapter(adapter);
 
-        getHotlines();
+        if (CommonUtils.isNetWorkAvailable(this))
+            getHotlines();
+        else
+            CommonUtils.showToastNoInternetConnecton(this);
     }
 
     @Override
@@ -99,7 +102,7 @@ public class HotlineBookingActivity extends BaseActivity implements AdapterView.
                 if (null != result) {
                     if (result.status.equals("0")) {
 
-                        for (int i=0;i<result.data.size();i++){
+                        for (int i = 0; i < result.data.size(); i++) {
                             contactList.add(result.data.get(i));
                         }
 
@@ -221,7 +224,7 @@ public class HotlineBookingActivity extends BaseActivity implements AdapterView.
                 viewHolder = new ViewHolder();
                 viewHolder.title = (TextView) view.findViewById(R.id.title);
                 viewHolder.name = (TextView) view.findViewById(R.id.name);
-                viewHolder.imageView = (ImageView)view.findViewById(R.id.imageView);
+                viewHolder.imageView = (ImageView) view.findViewById(R.id.imageView);
 
                 view.setTag(viewHolder);
             } else {

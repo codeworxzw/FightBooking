@@ -19,6 +19,7 @@ public class ChooseTimeActivity extends BaseActivity implements CalendarPickerVi
     private CalendarPickerView calendar;
 
     private boolean isRoundTrip = false;
+    private boolean isOneWay = false;
     private long longDepartDate = 0, longReturnDate = 0;
 
     @Override
@@ -52,6 +53,7 @@ public class ChooseTimeActivity extends BaseActivity implements CalendarPickerVi
 
         Bundle bundle = getIntent().getExtras();
         isRoundTrip = bundle.getBoolean("isRoundTrip");
+        isOneWay = bundle.getBoolean("isOneWay");
 
         if (!isRoundTrip) {
             initTitle(getString(R.string.choose_time_go));
@@ -88,7 +90,7 @@ public class ChooseTimeActivity extends BaseActivity implements CalendarPickerVi
         Log.e("", "onDateSelected");
 
         if (!isRoundTrip) {// Chon thoi gian di
-            if (this.longReturnDate != 0 && date.getTime() > this.longReturnDate) {
+            if (!isOneWay && this.longReturnDate != 0 && date.getTime() > this.longReturnDate) {
                 ToastUtils.toast(this, getString(R.string.time_go_must_be_less_than_time_back));
                 return;
             }

@@ -58,7 +58,12 @@ public class GetPromotionActivity extends BaseActivity implements View.OnClickLi
     @Override
     protected void loadData() {
 
-        getSocial();
+        if (CommonUtils.isNetWorkAvailable(this))
+            getSocial();
+        else
+            CommonUtils.showToastNoInternetConnecton(this);
+
+
 
     }
 

@@ -13,8 +13,8 @@
         android:id="@+id/viewContainner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
-        android:layout_below="@+id/actionbar">
+        android:layout_below="@+id/actionbar"
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/title"
@@ -27,7 +27,7 @@
             android:text="@string/title_like_desc"
             android:textSize="20sp" />
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/rlFb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,23 +36,30 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_fb_like" />
-
             <!--<ImageView-->
-            <!--android:layout_width="80dp"-->
-            <!--android:layout_height="80dp"-->
-            <!--android:layout_margin="10dp"-->
-            <!--android:src="@drawable/ic_fb" />-->
-
-            <!--<TextView-->
             <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Facebook"-->
-            <!--android:textSize="20sp" />-->
+            <!--android:layout_height="100dp"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:src="@drawable/ic_fb_like" />-->
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_fb" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Facebook"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_fb_like" />
 
             <!--<com.facebook.share.widget.LikeView-->
             <!--android:id="@+id/likeView"-->
@@ -60,9 +67,9 @@
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_marginLeft="10dp" />-->
 
-        </FrameLayout>
+        </LinearLayout>
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/rlGooglePlus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,25 +79,32 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="100dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_google_plus_more" />
-
             <!--<ImageView-->
-            <!--android:layout_width="80dp"-->
-            <!--android:layout_height="80dp"-->
-            <!--android:layout_margin="10dp"-->
-            <!--android:src="@drawable/ic_google_plus" />-->
-
-            <!--<TextView-->
             <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Google Plus"-->
-            <!--android:textSize="20sp" />-->
+            <!--android:layout_height="100dp"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:src="@drawable/ic_google_plus_more" />-->
 
-        </FrameLayout>
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_google_plus" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Google Plus"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_goo_plus" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -40,8 +40,11 @@ public class AboutUsActivity extends BaseActivity {
 
     @Override
     protected void loadData() {
-        getAbout();
 
+        if (CommonUtils.isNetWorkAvailable(this))
+            getAbout();
+        else
+            CommonUtils.showToastNoInternetConnecton(this);
     }
 
     private void getAbout() {

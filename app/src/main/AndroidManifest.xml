@@ -36,6 +36,13 @@
 
         <!--End FB-->
 
+        <!-- Network receiver -->
+        <receiver android:name="com.ebksoft.flightbooking.receiver.NetworkReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name="com.ebksoft.flightbooking.SplashScreenActivity"
             android:label="@string/app_name"

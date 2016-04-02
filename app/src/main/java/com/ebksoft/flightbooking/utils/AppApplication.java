@@ -57,5 +57,15 @@ public class AppApplication extends Application {
         indexChooseTicketBack = -1;
     }
 
+    private boolean isInternetConnnection = false;
+
+    public boolean isInternetConnnection() {
+        return isInternetConnnection;
+    }
+
+    public void setInternetConnnection(boolean isInternetConnnection) {
+        this.isInternetConnnection = isInternetConnnection;
+    }
+
 
 }

@@ -229,180 +229,6 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-
-    private void reqInitAPI() {
-
-        CommonUtils.showProgressDialog(this);
-        HashMap<String, Object> params = new HashMap<String, Object>();
-
-        params.put("authen_key", ConfigAPI.AUTHEN_KEY);
-        params.put("ip_address", CommonUtils.getIPAddress(this));
-
-        AppRequest.reqInitAPI(this, params, true, new DataRequestCallback<InitResObj>() {
-            @Override
-            public void onResult(InitResObj result, boolean continueWaiting) {
-
-                if (null != result) {
-                    if (result.status.equals("0")) {
-                        session_key = result.data.session_key;
-                        SharedpreferencesUtils.getInstance(HomeActivity.this).save("session_key", session_key);
-
-                        searchFight();
-                    } else {
-                        session_key = "";
-                        CommonUtils.showToast(HomeActivity.this, result.message);
-                    }
-
-                } else {
-                    session_key = "";
-                }
-
-
-            }
-        });
-    }
-
-    private void searchFight() {
-
-        HashMap<String, Object> params = new HashMap<String, Object>();
-
-        params.put("session_key", session_key);
-
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("FromCityCode", FromCityCode);
-            jsonObject.put("ToCityCode", ToCityCode);
-            jsonObject.put("DepartDate", "/Date(" + DepartDate + ")/");
-
-            if (ReturnDate.equals("")) {
-                jsonObject.put("ReturnDate", ReturnDate);
-            } else {
-                jsonObject.put("ReturnDate", "/Date(" + ReturnDate + ")/");
-            }
-
-            jsonObject.put("AdultNum", countAdult);
-            jsonObject.put("ChildNum", countChild);
-            jsonObject.put("InfantNum", countIndent);
-
-            params.put("search_info", jsonObject);
-        } catch (Exception ex) {
-            Log.e("", "SeerchFight Error");
-        }
-
-        app = AppApplication.getInstance(this);
-        app.countAdult = countAdult;
-        app.countChild = countChild;
-        app.countIndent = countIndent;
-
-        app.FromCityCode = FromCityCode;
-        app.ToCityCode = ToCityCode;
-
-        AppRequest.searchFight(this, params, true, new DataRequestCallback<SearchResObj>() {
-            @Override
-            public void onResult(SearchResObj result, boolean continueWaiting) {
-                CommonUtils.closeProgressDialog();
-                if (null != result) {
-                    if (result.status.equals("0")) {
-
-                        //Cache this search for history
-
-                        addSearchTrip();
-
-                        //End
-
-                        Intent intent = new Intent(HomeActivity.this, SearchFightResultActivity.class);
-                        intent.putExtra("place_from", tvPlaceFromName.getText().toString());
-                        intent.putExtra("place_to", tvPlaceToName.getText().toString());
-
-                        intent.putExtra("time_go", DepartDate);
-
-                        if (!isOneWay)
-                            intent.putExtra("time_back", ReturnDate);
-
-                        app.isOneWay = isOneWay;
-
-                        startActivity(intent);
-
-                    } else {
-                        CommonUtils.showToast(HomeActivity.this, result.message);
-                    }
-
-                } else {
-
-                }
-
-
-            }
-        });
-
-    }
-
-    private void addSearchTrip() {
-
-        HistorySearchTrip searchTrip = new HistorySearchTrip();
-
-        String s = String.format("%s (%s)", tvPlaceFromName.getText().toString(), FromCityCode);
-        searchTrip.From = s;
-
-        s = String.format("%s (%s)", tvPlaceToName.getText().toString(), ToCityCode);
-        searchTrip.To = s;
-
-        if (isOneWay) {
-            s = "1 chiều\n";
-        } else {
-            s = "2 chiều\n";
-        }
-
-        s += String.format("%s - %s, %s %s",
-                tvPlaceFromName.getText().toString(),
-                tvDayGo.getText().toString(),
-                tvDateGo.getText().toString(),
-                tvMonthYearGo.getText().toString());
-
-        if (!isOneWay) {
-            s += "\n";
-            s += String.format("%s - %s, %s %s",
-                    tvPlaceToName.getText().toString(),
-                    tvDayTo.getText().toString(),
-                    tvDateTo.getText().toString(),
-                    tvMonthYearTo.getText().toString());
-        }
-
-        searchTrip.WayTime = s;
-
-        s = String.format("%d Người lớn", countAdult);
-
-        if (countChild != 0) {
-            s += String.format(", %d Trẻ em", countChild);
-        }
-
-        if (countIndent != 0) {
-            s += String.format(", %d Sơ sinh", countIndent);
-        }
-
-        searchTrip.Passenger = s;
-
-        searchTrip.FromCityCode = FromCityCode;
-        searchTrip.FromCityName = tvPlaceFromName.getText().toString();
-
-        searchTrip.ToCityCode = ToCityCode;
-        searchTrip.ToCityName = tvPlaceToName.getText().toString();
-
-        searchTrip.calendarGo = Calendar.getInstance();
-        searchTrip.calendarGo.setTimeInMillis(ltimeGo);
-
-        searchTrip.calendarBack = Calendar.getInstance();
-        searchTrip.calendarBack.setTimeInMillis(lTimeBack);
-
-        searchTrip.countAdult = countAdult;
-        searchTrip.countChild = countChild;
-        searchTrip.countIdent = countIndent;
-
-        searchTrip.isOneWay = isOneWay;
-
-        CommonUtils.addHistorySearchTrip(this, searchTrip);
-    }
-
     @Override
     public void onClick(View view) {
 
@@ -427,20 +253,28 @@ public class HomeActivity extends AppCompatActivity
                 break;
 
             case R.id.imgSearchFight:
-                reqInitAPI();
+
+                if (CommonUtils.isNetWorkAvailable(this))
+                    reqInitAPI();
+                else
+                    CommonUtils.showToastNoInternetConnecton(this);
+
+
                 break;
 
             case R.id.rlTimeGo:
                 i = new Intent(this, ChooseTimeActivity.class);
-                i.putExtra("isRoundTrip", false);
-                i.putExtra("ReturnDate", ReturnDate);
+                i.putExtra("isRoundTrip", false);// Chieu di
+                i.putExtra("ReturnDate", ReturnDate);// Ngay ve
+                i.putExtra("isOneWay", isOneWay);
                 startActivityForResult(i, TIME_GO_CODE);
                 break;
 
             case R.id.rlTimeTo:
                 i = new Intent(this, ChooseTimeActivity.class);
-                i.putExtra("isRoundTrip", true);
-                i.putExtra("DepartDate", DepartDate);
+                i.putExtra("isRoundTrip", true);// Chieu ve
+                i.putExtra("DepartDate", DepartDate);// Ngay di
+                i.putExtra("isOneWay", isOneWay);
                 startActivityForResult(i, TIME_BACK_CODE);
                 break;
 
@@ -717,19 +551,14 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
         }
@@ -760,4 +589,189 @@ public class HomeActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+
+    /*
+    * Add search trip for history
+    * */
+    private void addSearchTrip() {
+
+        HistorySearchTrip searchTrip = new HistorySearchTrip();
+
+        String s = String.format("%s (%s)", tvPlaceFromName.getText().toString(), FromCityCode);
+        searchTrip.From = s;
+
+        s = String.format("%s (%s)", tvPlaceToName.getText().toString(), ToCityCode);
+        searchTrip.To = s;
+
+        if (isOneWay) {
+            s = "1 chiều\n";
+        } else {
+            s = "2 chiều\n";
+        }
+
+        s += String.format("%s - %s, %s %s",
+                tvPlaceFromName.getText().toString(),
+                tvDayGo.getText().toString(),
+                tvDateGo.getText().toString(),
+                tvMonthYearGo.getText().toString());
+
+        if (!isOneWay) {
+            s += "\n";
+            s += String.format("%s - %s, %s %s",
+                    tvPlaceToName.getText().toString(),
+                    tvDayTo.getText().toString(),
+                    tvDateTo.getText().toString(),
+                    tvMonthYearTo.getText().toString());
+        }
+
+        searchTrip.WayTime = s;
+
+        s = String.format("%d Người lớn", countAdult);
+
+        if (countChild != 0) {
+            s += String.format(", %d Trẻ em", countChild);
+        }
+
+        if (countIndent != 0) {
+            s += String.format(", %d Sơ sinh", countIndent);
+        }
+
+        searchTrip.Passenger = s;
+
+        searchTrip.FromCityCode = FromCityCode;
+        searchTrip.FromCityName = tvPlaceFromName.getText().toString();
+
+        searchTrip.ToCityCode = ToCityCode;
+        searchTrip.ToCityName = tvPlaceToName.getText().toString();
+
+        searchTrip.calendarGo = Calendar.getInstance();
+        searchTrip.calendarGo.setTimeInMillis(ltimeGo);
+
+        searchTrip.calendarBack = Calendar.getInstance();
+        searchTrip.calendarBack.setTimeInMillis(lTimeBack);
+
+        searchTrip.countAdult = countAdult;
+        searchTrip.countChild = countChild;
+        searchTrip.countIdent = countIndent;
+
+        searchTrip.isOneWay = isOneWay;
+
+        CommonUtils.addHistorySearchTrip(this, searchTrip);
+    }
+
+    /*
+    * Send request to server to get data
+    *
+    * */
+
+    private void reqInitAPI() {
+
+        CommonUtils.showProgressDialog(this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("authen_key", ConfigAPI.AUTHEN_KEY);
+        params.put("ip_address", CommonUtils.getIPAddress(this));
+
+        AppRequest.reqInitAPI(this, params, true, new DataRequestCallback<InitResObj>() {
+            @Override
+            public void onResult(InitResObj result, boolean continueWaiting) {
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
+                        session_key = result.data.session_key;
+                        SharedpreferencesUtils.getInstance(HomeActivity.this).save("session_key", session_key);
+
+                        searchFight();
+                    } else {
+                        session_key = "";
+                        CommonUtils.showToast(HomeActivity.this, result.message);
+                    }
+
+                } else {
+                    session_key = "";
+                }
+
+
+            }
+        });
+    }
+
+    private void searchFight() {
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("session_key", session_key);
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("FromCityCode", FromCityCode);
+            jsonObject.put("ToCityCode", ToCityCode);
+            jsonObject.put("DepartDate", "/Date(" + DepartDate + ")/");
+
+            if (ReturnDate.equals("")) {
+                jsonObject.put("ReturnDate", ReturnDate);
+            } else {
+                jsonObject.put("ReturnDate", "/Date(" + ReturnDate + ")/");
+            }
+
+            jsonObject.put("AdultNum", countAdult);
+            jsonObject.put("ChildNum", countChild);
+            jsonObject.put("InfantNum", countIndent);
+
+            params.put("search_info", jsonObject);
+        } catch (Exception ex) {
+            Log.e("", "SeerchFight Error");
+        }
+
+        app = AppApplication.getInstance(this);
+        app.countAdult = countAdult;
+        app.countChild = countChild;
+        app.countIndent = countIndent;
+
+        app.FromCityCode = FromCityCode;
+        app.ToCityCode = ToCityCode;
+
+        AppRequest.searchFight(this, params, true, new DataRequestCallback<SearchResObj>() {
+            @Override
+            public void onResult(SearchResObj result, boolean continueWaiting) {
+                CommonUtils.closeProgressDialog();
+                if (null != result) {
+                    if (result.status.equals("0")) {
+
+                        //Cache this search for history
+
+                        addSearchTrip();
+
+                        //End
+
+                        Intent intent = new Intent(HomeActivity.this, SearchFightResultActivity.class);
+                        intent.putExtra("place_from", tvPlaceFromName.getText().toString());
+                        intent.putExtra("place_to", tvPlaceToName.getText().toString());
+
+                        intent.putExtra("time_go", DepartDate);
+
+                        if (!isOneWay)
+                            intent.putExtra("time_back", ReturnDate);
+
+                        app.isOneWay = isOneWay;
+
+                        startActivity(intent);
+
+                    } else {
+                        CommonUtils.showToast(HomeActivity.this, result.message);
+                    }
+
+                } else {
+
+                }
+
+
+            }
+        });
+
+    }
+
+
 }
