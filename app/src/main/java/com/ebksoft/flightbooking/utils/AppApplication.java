@@ -18,7 +18,7 @@ public class AppApplication extends Application {
 
     public static AppApplication getInstance(Context context) {
         if (null == instance)
-            instance = (AppApplication)context.getApplicationContext();
+            instance = (AppApplication) context.getApplicationContext();
         return instance;
     }
 
