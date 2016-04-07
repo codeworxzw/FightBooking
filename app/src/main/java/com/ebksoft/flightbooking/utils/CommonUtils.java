@@ -1,5 +1,7 @@
 package com.ebksoft.flightbooking.utils;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +13,13 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.ebksoft.flightbooking.GetPromotionActivity;
 import com.ebksoft.flightbooking.R;
 import com.ebksoft.flightbooking.model.HistorySearchTrip;
 import com.ebksoft.flightbooking.model.SocialModel;
@@ -252,6 +257,14 @@ public class CommonUtils {
                     SharedpreferencesUtils.getInstance(context).save("history", s);
                 }
 
+                /*
+                * Do Backup Share pref
+                * */
+
+//                BackupAgentUtils backup = new BackupAgentUtils();
+//                backup.requestBackup();
+
+
             }
         }, priority);
     }
@@ -269,8 +282,42 @@ public class CommonUtils {
         return (netInfo != null && netInfo.isConnected());
     }
 
-    public static boolean isNetWorkAvailable(Context context){
+    public static boolean isNetWorkAvailable(Context context) {
         return AppApplication.getInstance(context).isInternetConnnection();
     }
 
+    /*
+    * Show notification for testing
+    * */
+    public static void showNotify(Context context) {
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.mipmap.ic_app)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World!");
+
+        Intent resultIntent = new Intent(context, GetPromotionActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+// Adds the back stack
+        stackBuilder.addParentStack(GetPromotionActivity.class);
+// Adds the Intent to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+// Gets a PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Sets an ID for the notification
+        int mNotificationId = 001;
+// Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+// Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+
+
+    }
 }

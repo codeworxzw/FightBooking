@@ -1,8 +1,12 @@
 package com.ebksoft.flightbooking;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +48,8 @@ public class SplashScreenActivity extends BaseActivity {
             public void run() {
                 startActivity(new Intent(mContext, HomeActivity.class));
                 finish();
+
+                // CommonUtils.showNotify(mContext);
             }
         }, 3000);
 
@@ -73,7 +79,7 @@ public class SplashScreenActivity extends BaseActivity {
         appApplication.historySearchTrips = new ArrayList<>();
 
         String history = SharedpreferencesUtils.getInstance(this).read("history");
-        if(!TextUtils.isEmpty(history)){
+        if (!TextUtils.isEmpty(history)) {
 
             appApplication.historySearchTrips = new Gson().fromJson(history, new TypeToken<List<HistorySearchTrip>>() {
             }.getType());
@@ -81,4 +87,6 @@ public class SplashScreenActivity extends BaseActivity {
         }
 
     }
+
+
 }
