@@ -1,6 +1,7 @@
 package com.ebksoft.flightbooking.network;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.ebksoft.flightbooking.model.ResponseObj.BookingResultResObj;
 import com.ebksoft.flightbooking.model.ResponseObj.DetailNewsResObj;
@@ -269,8 +270,8 @@ public class AppRequest {
     }
 
     public static void getListNews(final Context context,
-                                        final HashMap<String, Object> params, final boolean forceUpdate,
-                                        final DataRequestCallback<ListNewsResObj> callback) {
+                                   final HashMap<String, Object> params, final boolean forceUpdate,
+                                   final DataRequestCallback<ListNewsResObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_GET_NEWS;
@@ -299,8 +300,8 @@ public class AppRequest {
     }
 
     public static void getListNewsDetail(final Context context,
-                                   final HashMap<String, Object> params, final boolean forceUpdate,
-                                   final DataRequestCallback<DetailNewsResObj> callback) {
+                                         final HashMap<String, Object> params, final boolean forceUpdate,
+                                         final DataRequestCallback<DetailNewsResObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_GET_NEWS_DETAIL;
@@ -329,8 +330,8 @@ public class AppRequest {
     }
 
     public static void getSocial(final Context context,
-                                         final HashMap<String, Object> params, final boolean forceUpdate,
-                                         final DataRequestCallback<GetSocialResObj> callback) {
+                                 final HashMap<String, Object> params, final boolean forceUpdate,
+                                 final DataRequestCallback<GetSocialResObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_GET_SOCIAL;
@@ -360,8 +361,8 @@ public class AppRequest {
 
 
     public static void getAbout(final Context context,
-                                 final HashMap<String, Object> params, final boolean forceUpdate,
-                                 final DataRequestCallback<GetAboutUsResObj> callback) {
+                                final HashMap<String, Object> params, final boolean forceUpdate,
+                                final DataRequestCallback<GetAboutUsResObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_GET_ABOUT;
@@ -390,8 +391,8 @@ public class AppRequest {
     }
 
     public static void getHotlines(final Context context,
-                                final HashMap<String, Object> params, final boolean forceUpdate,
-                                final DataRequestCallback<GetHotlinesResObj> callback) {
+                                   final HashMap<String, Object> params, final boolean forceUpdate,
+                                   final DataRequestCallback<GetHotlinesResObj> callback) {
 
         final String url = ConfigAPI.DOMAIN_HTTP
                 + ConfigAPI.API_GET_HOTLINES;
@@ -419,6 +420,33 @@ public class AppRequest {
         }, priority);
     }
 
+    public static void importBooking(final Context context,
+                                     final HashMap<String, Object> params, final boolean forceUpdate,
+                                     final DataRequestCallback<SVResponseObj> callback) {
+
+        final String url = ConfigAPI.IMPORT_BOOKING;
+
+        final ThreadManager t = ThreadManager.getInstance();
+
+        int priority;
+        if (forceUpdate) {
+            priority = ThreadManager.PRIORITY_BLOCKING;
+        } else {
+            priority = ThreadManager.PRIORITY_NORMAL;
+        }
+
+        t.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                JSONObject jsonRequest = CommonUtils.buildJson(params);
+                String result = HttpUtils.requestHttpPOST1(url, jsonRequest);
+                Log.e("", result);
+                t.callbackOnUIThread(callback, null, false);
+
+            }
+        }, priority);
+    }
 
 
 }

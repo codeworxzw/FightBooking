@@ -4,17 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ebksoft.flightbooking.model.BookingResultModel;
 import com.ebksoft.flightbooking.model.ResponseObj.BookingResultResObj;
+import com.ebksoft.flightbooking.model.ResponseObj.SVResponseObj;
+import com.ebksoft.flightbooking.model.TicketInfo;
 import com.ebksoft.flightbooking.network.AppRequest;
 import com.ebksoft.flightbooking.utils.AppApplication;
 import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.ebksoft.flightbooking.utils.DataRequestCallback;
 import com.ebksoft.flightbooking.utils.SharedpreferencesUtils;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +33,8 @@ public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListe
 
     private TextView tvDeadlineToPay, tvBriefTicket;
     private View contentView;
+
+    private BookingResultModel data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +90,7 @@ public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListe
                 if (null != result) {
                     if (result.status.equals("0")) {
 
-                        BookingResultModel data = result.data;
+                        data = result.data;
 
                         int start = data.HoldToDate.indexOf("(");
                         int end = data.HoldToDate.indexOf(")");
@@ -97,6 +105,81 @@ public class ConfirmTicketInfo extends BaseActivity implements View.OnClickListe
                         }
 
                         tvBriefTicket.setText(data.FlightInfo);
+
+
+                        try {
+                            //Send Import Booking
+                            importBooking();
+                        } catch (Exception ex) {
+                            Log.e("", ex.getMessage());
+                        }
+
+
+                    } else {
+                        CommonUtils.showToast(mContext, result.message);
+                    }
+
+                    contentView.setVisibility(View.VISIBLE);
+
+                } else {
+                    CommonUtils.showToast(mContext, getString(R.string.connection_timeout));
+                }
+
+            }
+        });
+    }
+
+    private void importBooking() throws Exception {
+
+        AppApplication appApplication = AppApplication.getInstance(this);
+
+        CommonUtils.showProgressDialog(this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+
+        params.put("session_key", SharedpreferencesUtils.getInstance(this).read("session_key"));
+
+
+        Gson gson = new Gson();
+
+        /*
+        * VE di
+        * */
+
+        String json = gson.toJson(appApplication.getTicketInfoWayGo());
+        params.put("ticket_depart", new JSONObject(json));
+
+
+        /*
+        * VE ve
+        * */
+
+        if (!appApplication.isOneWay) {
+            json = gson.toJson(appApplication.getTicketInfoWayBack());
+            params.put("ticket_return", new JSONObject(json));
+        } else {
+            params.put("ticket_return", "");
+        }
+
+
+        /*
+        * Booking info
+        * */
+        json = gson.toJson(data);
+        params.put("booking_info", new JSONObject(json));
+
+        /*
+        * Thông tin passenger màn hình trước
+        * */
+
+        params.put("passengers", appApplication.getPassenger());
+
+        AppRequest.importBooking(this, params, true, new DataRequestCallback<SVResponseObj>() {
+            @Override
+            public void onResult(SVResponseObj result, boolean continueWaiting) {
+                CommonUtils.closeProgressDialog();
+
+                if (null != result) {
+                    if (result.status.equals("0")) {
 
                     } else {
                         CommonUtils.showToast(mContext, result.message);

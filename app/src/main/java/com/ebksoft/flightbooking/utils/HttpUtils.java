@@ -36,7 +36,7 @@ import java.util.List;
 public class HttpUtils {
 
     private static final String TAG = HttpUtils.class.getName();
-    private static final int CONNECTION_TIMEOUT = 30000;
+    private static final int CONNECTION_TIMEOUT = 60000 * 2;
 
     public static String requestHttpPOST(String url, JSONObject json) {
         String result = null;
@@ -72,6 +72,42 @@ public class HttpUtils {
 
         return result;
     }
+
+    public static String requestHttpPOST1(String url, JSONObject json) {
+        String result = null;
+        HttpPost httpPost = new HttpPost(url);
+
+        BasicHttpParams timeoutParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(timeoutParams, CONNECTION_TIMEOUT);
+        HttpConnectionParams.setSoTimeout(timeoutParams, CONNECTION_TIMEOUT);
+        httpPost.setParams(timeoutParams);
+
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>(1);
+        params.add(new BasicNameValuePair("strKeyword", json.toString()));
+
+        try {
+            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params,
+                    HTTP.UTF_8);
+            httpPost.setHeader(HTTP.CONTENT_TYPE,
+                    "application/x-www-form-urlencoded;charset=UTF-8");
+            httpPost.setEntity(ent);
+            HttpResponse responsePOST = httpClient.execute(httpPost);
+            HttpEntity resEntity = responsePOST.getEntity();
+            if (resEntity != null) {
+                result = EntityUtils.toString(resEntity);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage() != null ? e.getMessage() : "Error");
+        } finally {
+            // httpClient.close();
+            httpClient.getConnectionManager().shutdown();
+        }
+
+        return result;
+    }
+
 
     ///
     public static String requestSSLPOST(String url, JSONObject json) {

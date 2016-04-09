@@ -464,7 +464,11 @@ public class HomeActivity extends AppCompatActivity
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        loadHistoryTrip(intent);
+        /*
+        * Do có 2 màn hình gọi về hàm này: MH Quản lý vé, và MH Confirm xong quá trình đặt xé, chỉ gọi load lại khi click từ màn hình Quản lý vé
+        * */
+        if (intent.getExtras() != null)
+            loadHistoryTrip(intent);
     }
 
     private void loadHistoryTrip(Intent intent) {
@@ -495,7 +499,7 @@ public class HomeActivity extends AppCompatActivity
 
                 loadGoTime(historySearchTrip.calendarGo);
 
-                if(!historySearchTrip.isOneWay){
+                if (!historySearchTrip.isOneWay) {
 
                     rlTimeToParent.setVisibility(View.VISIBLE);
                     imgFightBack.setVisibility(View.VISIBLE);
@@ -504,7 +508,7 @@ public class HomeActivity extends AppCompatActivity
                     btRoundTrip.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
                     loadGoBackTime(historySearchTrip.calendarBack);
-                }else{
+                } else {
 
                     rlTimeToParent.setVisibility(View.INVISIBLE);
                     imgFightBack.setVisibility(View.GONE);
@@ -589,7 +593,6 @@ public class HomeActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
 
     /*

@@ -370,6 +370,12 @@ public class CustommerInfoActivity extends BaseActivity implements View.OnClickL
         params.put("passengers", jsonArray);
 
 
+        /*
+        * Lưu tạm thông tin Passenger để gửi lên Server khác tại MH Confirm
+        * */
+        AppApplication.getInstance(this).setPassenger(jsonArray);
+
+
         //Check DK nguoi lien he
         if (!checkContactInfo()) {
             CommonUtils.closeProgressDialog();

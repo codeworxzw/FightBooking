@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.ebksoft.flightbooking.utils.ToastUtils;
+import com.ebksoft.flightbooking.utils.CommonUtils;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.util.Calendar;
@@ -91,12 +91,12 @@ public class ChooseTimeActivity extends BaseActivity implements CalendarPickerVi
 
         if (!isRoundTrip) {// Chon thoi gian di
             if (!isOneWay && this.longReturnDate != 0 && date.getTime() > this.longReturnDate) {
-                ToastUtils.toast(this, getString(R.string.time_go_must_be_less_than_time_back));
+                CommonUtils.showToast(this, getString(R.string.time_go_must_be_less_than_time_back));
                 return;
             }
         } else {// Chon thoi gian ve
             if (this.longDepartDate != 0 && date.getTime() < this.longDepartDate) {
-                ToastUtils.toast(this, getString(R.string.time_back_must_be_over_than_time_go));
+                CommonUtils.showToast(this, getString(R.string.time_back_must_be_over_than_time_go));
                 return;
             }
         }

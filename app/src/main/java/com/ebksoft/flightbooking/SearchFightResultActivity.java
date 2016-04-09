@@ -1591,6 +1591,12 @@ public class SearchFightResultActivity extends BaseActivity implements View.OnCl
                 if (null != result) {
                     if (result.status.equals("0")) {
 
+                        //Lưu tạm thông tin 2 vé
+                        application.isOneWay = isOneWay;
+                        application.setTicketInfoWayGo(ticketWayGo);
+                        application.setTicketInfoWayBack(ticketWayBack);
+
+
                         //Next qua man hinh Customer
                         startActivity(new Intent(mContext, CustommerInfoActivity.class));
 
