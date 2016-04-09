@@ -147,8 +147,7 @@
                         android:layout_marginTop="5dp"
                         android:background="@drawable/border_edittext_persional_info"
                         android:inputType="text"
-                        android:padding="10dp"
-                        android:text="Ngo Dinh Minh Duc" />
+                        android:padding="10dp" />
 
 
                     <RelativeLayout
@@ -183,8 +182,7 @@
                         android:layout_marginTop="5dp"
                         android:background="@drawable/border_edittext_persional_info"
                         android:inputType="textEmailAddress"
-                        android:padding="10dp"
-                        android:text="duc.ndm@ebksolutions.com" />
+                        android:padding="10dp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -218,8 +216,7 @@
                         android:layout_marginTop="5dp"
                         android:background="@drawable/border_edittext_persional_info"
                         android:inputType="phone"
-                        android:padding="10dp"
-                        android:text="01698767890" />
+                        android:padding="10dp" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -253,8 +250,7 @@
                         android:layout_marginTop="5dp"
                         android:background="@drawable/border_edittext_persional_info"
                         android:inputType="text"
-                        android:padding="10dp"
-                        android:text="12 Van Kiep, P12, Q Binh Thanh" />
+                        android:padding="10dp" />
 
                 </LinearLayout>
 

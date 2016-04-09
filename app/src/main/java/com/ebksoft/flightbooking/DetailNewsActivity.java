@@ -1,6 +1,9 @@
 package com.ebksoft.flightbooking;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.WindowManager;
 import android.webkit.WebView;
 
 import com.ebksoft.flightbooking.model.ResponseObj.DetailNewsResObj;
@@ -23,12 +26,8 @@ public class DetailNewsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_detail_news_activity);
 
-
         loadView();
-
         loadData();
-
-
     }
 
     @Override
@@ -38,6 +37,12 @@ public class DetailNewsActivity extends BaseActivity {
         initButtonBack();
 
         webView = (WebView) findViewById(R.id.webView);
+
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
     }
 
     @Override
